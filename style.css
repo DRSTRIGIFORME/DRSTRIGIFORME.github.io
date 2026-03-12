@@ -1,7 +1,7 @@
 body {
     margin: 0;
-    font-family: "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #0f0f0f, #1b1b2f);
+    font-family: "Courier New", monospace;
+    background: linear-gradient(135deg, #0f0f0f, #FC03F9);
     color: white;
 }
 
