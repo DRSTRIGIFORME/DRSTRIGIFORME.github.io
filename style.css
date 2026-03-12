@@ -1,7 +1,7 @@
 body {
     margin: 0;
     font-family: "Courier New", monospace;
-    background: linear-gradient(135deg, #0f0f0f, #FC03F9);
+    background: FC03F9 ;
     color: white;
 }
 
@@ -31,7 +31,7 @@ nav a {
 }
 
 nav a:hover {
-    color: #FC03F9;
+    color: FC03F9;
 }
 
 main {
@@ -41,7 +41,7 @@ main {
 }
 
 .card {
-    background: rgba(255,255,255,0.05);
+    background: ;
     padding: 25px;
     border-radius: 12px;
     margin-bottom: 20px;
