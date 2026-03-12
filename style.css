@@ -1,13 +1,13 @@
 body {
     margin: 0;
     font-family: "Courier New", monospace;
-    background: FC03F9 ;
+    background: #FC03F9 ;
     color: white;
 }
 
 header {
     text-align: center;
-    color: FC03F9;
+    color: #FC03F9;
     padding: 80px 20px;
 }
 
@@ -20,7 +20,7 @@ nav {
     justify-content: center;
     gap: 30px;
     padding: 15px;
-    background: FC03F9;
+    background: #FC03F9;
 }
 
 nav a {
@@ -31,7 +31,7 @@ nav a {
 }
 
 nav a:hover {
-    color: FC03F9;
+    color: #FC03F9;
 }
 
 main {
