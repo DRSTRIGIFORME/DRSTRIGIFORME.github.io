@@ -19,6 +19,19 @@ a {
     text-decoration: none;
 }
 
+body {
+    background: black;
+    color: #33ff33;
+    font-family: "Courier New", monospace;
+    margin: 0;
+}
+
+main {
+    border: 2px solid #33ff33;
+    padding: 20px;
+    max-width: 900px;
+}
+
 a:hover {
     text-decoration: underline;
 }
