@@ -1,1 +1,25 @@
+body {
+    background-color: #000000;
+    color: #33ff33;
+    font-family: "Courier New", monospace;
+    margin: 0;
+    padding: 20px;
+}
+
+header {
+    margin-bottom: 30px;
+}
+
+h1 {
+    font-size: 28px;
+}
+
+a {
+    color: #33ff33;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
 
