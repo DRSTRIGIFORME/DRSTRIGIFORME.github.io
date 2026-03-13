@@ -22,11 +22,11 @@ main {
 }
 
 main a {
-    color: #00ff00;        /* bright terminal green */
-    text-decoration: none;  /* remove underline */
+    color: #00ff00;
+    text-decoration: none;
     transition: 0.2s;
 }
 
 main a:hover {
-    text-decoration: underline; /* optional hover effect */
+    text-decoration: underline;
 }
