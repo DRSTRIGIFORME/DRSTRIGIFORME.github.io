@@ -68,8 +68,9 @@ main {
 
 .guestbook-button img {
     transform: scale(2);
+    transition: transform 0.2s;
 }
 
 .guestbook-button img:hover {
-    transform: scale(1.1);
+    transform: scale(2.2);
 }
