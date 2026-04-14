@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: black;
+    }
+
+    .eye-container {
+      width: 400px;
+      height: 200px;
+
+      /* Eye shape */
+      clip-path: path("M0,100 Q200,0 400,100 Q200,200 0,100 Z");
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1); /* optional mirror */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="eye-container">
+    <video id="cam" autoplay playsinline></video>
+  </div>
+
+  <script>
+    const video = document.getElementById("cam");
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => console.error(err));
+  </script>
+
+</body>
+</html>
