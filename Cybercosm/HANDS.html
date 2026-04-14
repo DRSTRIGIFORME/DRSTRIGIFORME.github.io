@@ -24,17 +24,25 @@
     background-position: center;
     background-repeat: no-repeat;
 
-    animation: pulse 5s infinite ease-in-out;
+    animation: pulse 8s infinite ease-in-out;
     z-index: -1;
   }
 
-  @keyframes pulse {
-    0%, 100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.09);
-    }
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.03);
+  }
+  80% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1); /* holds still = pause */
+  }
+}
+ 
   }
 </style>
 </head>
