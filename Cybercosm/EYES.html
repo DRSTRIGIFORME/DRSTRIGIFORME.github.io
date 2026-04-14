@@ -12,14 +12,22 @@
     }
 
     .eye-container {
-      width: 400px;
-      height: 200px;
+  width: 400px;
+  height: 200px;
+  overflow: hidden;
 
-      /* Eye shape */
-      clip-path: path("M0,100 Q200,0 400,100 Q200,200 0,100 Z");
-      overflow: hidden;
-    }
+  /* Eye shape with soft edges */
+  -webkit-mask-image: radial-gradient(ellipse at center,
+    black 60%,
+    transparent 100%
+  );
 
+  mask-image: radial-gradient(ellipse at center,
+    black 60%,
+    transparent 100%
+  );
+}
+    
     video {
       width: 100%;
       height: 100%;
