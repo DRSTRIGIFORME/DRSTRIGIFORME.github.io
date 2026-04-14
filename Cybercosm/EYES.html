@@ -1,56 +1,86 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: black;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cybercosm Eye</title>
 
-    .eye-container {
-  width: 300px;
-  height: 150px;
-  overflow: hidden;
+<style>
+  body {
+    margin: 0;
+    background: black;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 
-  /* Eye shape with soft edges */
-  -webkit-mask-image: radial-gradient(ellipse at center,
-    black 80%,
-    transparent 80%
-  );
+  /* 👁️ Eye container */
+  .eye-container {
+    width: 400px;
+    height: 200px;
+    overflow: hidden;
 
-  mask-image: radial-gradient(ellipse at center,
-    black 60%,
-    transparent 80%
-  );
-}
-    
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scaleX(-1); /* optional mirror */
-    }
-  </style>
+    -webkit-mask-image: radial-gradient(ellipse at center,
+      black 60%,
+      transparent 100%
+    );
+
+    mask-image: radial-gradient(ellipse at center,
+      black 60%,
+      transparent 100%
+    );
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  #hand-button {
+    width: 80px;
+
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 2s ease;
+    z-index: 9999;
+  }
+
+  #hand-button.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
 </head>
+
 <body>
 
-  <div class="eye-container">
-    <video id="cam" autoplay playsinline></video>
-  </div>
+<div class="eye-container">
+  <video id="cam" autoplay playsinline></video>
+</div>
 
-  <script>
-    const video = document.getElementById("cam");
+<a href="Cybercosm/HANDS.html">
+  <img src="miscimages/hand.jpeg" id="hand-button" alt="Continue">
+</a>
 
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => {
-        video.srcObject = stream;
-      })
-      .catch(err => console.error(err));
-  </script>
+<script>
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      document.getElementById("cam").srcObject = stream;
+    })
+    .catch(err => console.error(err));
+
+  setTimeout(() => {
+    document.getElementById("hand-button").classList.add("show");
+  }, 60000);
+</script>
 
 </body>
 </html>
