@@ -60,48 +60,52 @@
     opacity: 1;
   }
 
-  #orb {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+ #orb {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 
-    width: 500px;
-    height: 200px;
+  width: 500px;
+  height: 200px;
 
-    background: radial-gradient(ellipse,
-      rgba(255,255,255,0.4) 0%,
-      rgba(255,255,255,0.15) 40%,
-      transparent 70%
-    );
+  background: radial-gradient(ellipse,
+    rgba(255,255,255,0.4) 0%,
+    rgba(255,255,255,0.15) 40%,
+    transparent 70%
+  );
 
-    filter: blur(20px);
+  filter: blur(20px);
 
-    opacity: 0;
-    pointer-events: none;
-    z-index: 1;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
 
-    animation: orbPulse 9s infinite ease-in-out;
+  animation: orbBreath 9s infinite ease-in-out;
+}
+
+@keyframes orbBreath {
+  0% {
+    opacity: 0;   /* inhale start */
   }
 
-  @keyframes orbPulse {
-    0%   { opacity: 0; }
-    35%  { opacity: 0.6; }  /* appears at peak */
-    70%  { opacity: 0; }
-    100% { opacity: 0; }   /* fades + pause */
+  30% {
+    opacity: 0;   /* still inhale */
   }
 
-</style>
-</head>
+  45% {
+    opacity: 0.7; /* exhale begins */
+  }
 
-<body>
+  65% {
+    opacity: 0.2; /* exhale fades out */
+  }
 
-<div class="bg"></div>
-
-<img src="../miscimages/teeth.png" id="teeth">
-
-<div id="orb"></div>
-
+  100% {
+    opacity: 0;   /* pause / reset */
+  }
+}
+  
 <script>
   setTimeout(() => {
     document.getElementById("teeth").classList.add("show");
