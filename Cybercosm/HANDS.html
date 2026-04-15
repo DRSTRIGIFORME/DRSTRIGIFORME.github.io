@@ -10,6 +10,7 @@
     margin: 0;
     height: 100vh;
     overflow: hidden;
+    background: black; /* fallback so it's never white */
   }
 
   .bg {
@@ -30,7 +31,7 @@
     0%   { transform: scale(1); }
     35%  { transform: scale(1.03); }
     70%  { transform: scale(1); }
-    100% { transform: scale(1); } /* pause */
+    100% { transform: scale(1); }
   }
 
   #teeth {
@@ -38,7 +39,6 @@
     bottom: 0;
     left: 50%;
     transform: translateX(-50%) scale(1);
-
     width: 300px;
 
     opacity: 0;
@@ -60,55 +60,53 @@
     opacity: 1;
   }
 
- #orb {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  #orb {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
-  width: 500px;
-  height: 200px;
+    width: 500px;
+    height: 200px;
 
-  background: radial-gradient(ellipse,
-    rgba(255,255,255,0.4) 0%,
-    rgba(255,255,255,0.15) 40%,
-    transparent 70%
-  );
+    background: radial-gradient(ellipse,
+      rgba(255,255,255,0.4) 0%,
+      rgba(255,255,255,0.15) 40%,
+      transparent 70%
+    );
 
-  filter: blur(20px);
+    filter: blur(20px);
 
-  opacity: 0;
-  pointer-events: none;
-  z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
 
-  animation: orbBreath 9s infinite ease-in-out;
-}
-
-@keyframes orbBreath {
-  0% {
-    opacity: 0;   /* inhale start */
+    animation: orbBreath 9s infinite ease-in-out;
   }
 
-  30% {
-    opacity: 0;   /* still inhale */
+  @keyframes orbBreath {
+    0%   { opacity: 0; }
+    30%  { opacity: 0; }
+    45%  { opacity: 0.7; }
+    65%  { opacity: 0.2; }
+    100% { opacity: 0; }
   }
+</style>
 
-  45% {
-    opacity: 0.7; /* exhale begins */
-  }
+</head>
 
-  65% {
-    opacity: 0.2; /* exhale fades out */
-  }
+<body>
 
-  100% {
-    opacity: 0;   /* pause / reset */
-  }
-}
-  
+<div class="bg"></div>
+
+<img id="teeth" src="../miscimages/teeth.png">
+
+<div id="orb"></div>
+
 <script>
   setTimeout(() => {
-    document.getElementById("teeth").classList.add("show");
+    const teeth = document.getElementById("teeth");
+    if (teeth) teeth.classList.add("show");
   }, 10000);
 </script>
 
