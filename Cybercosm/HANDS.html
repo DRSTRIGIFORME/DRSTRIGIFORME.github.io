@@ -25,6 +25,13 @@
 
     animation: pulse 9s infinite ease-in-out;
     z-index: -2;
+
+    @keyframes pulse {
+  0%   { transform: scale(1); filter: brightness(1); }
+  35%  { transform: scale(1.03); filter: brightness(1.05); }
+  70%  { transform: scale(1); filter: brightness(1); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
   }
 
   @keyframes pulse {
