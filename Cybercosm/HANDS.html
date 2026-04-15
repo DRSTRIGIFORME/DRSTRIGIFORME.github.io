@@ -10,7 +10,7 @@
     margin: 0;
     height: 100vh;
     overflow: hidden;
-    background: black; /* fallback so it's never white */
+    background: black;
   }
 
   .bg {
@@ -36,13 +36,13 @@
 
   #teeth {
     position: fixed;
-    bottom: 0;
+    top: 50%;
     left: 50%;
-    transform: translateX(-50%) scale(1);
+    transform: translate(-50%, -50%) scale(1);
     width: 300px;
 
     opacity: 0;
-    z-index: 2;
+    z-index: 1;
 
     transition: opacity 2s ease;
 
@@ -50,10 +50,10 @@
   }
 
   @keyframes teethPulse {
-    0%   { transform: translateX(-50%) scale(1); }
-    35%  { transform: translateX(-50%) scale(1.015); }
-    70%  { transform: translateX(-50%) scale(1); }
-    100% { transform: translateX(-50%) scale(1); }
+    0%   { transform: translate(-50%, -50%) scale(1); }
+    35%  { transform: translate(-50%, -50%) scale(1.01); }
+    70%  { transform: translate(-50%, -50%) scale(1); }
+    100% { transform: translate(-50%, -50%) scale(1); }
   }
 
   #teeth.show {
@@ -79,7 +79,8 @@
 
     opacity: 0;
     pointer-events: none;
-    z-index: 1;
+
+    z-index: 2; 
 
     animation: orbBreath 9s infinite ease-in-out;
   }
@@ -92,7 +93,6 @@
     100% { opacity: 0; }
   }
 </style>
-
 </head>
 
 <body>
@@ -100,13 +100,11 @@
 <div class="bg"></div>
 
 <img id="teeth" src="../miscimages/teeth.png">
-
 <div id="orb"></div>
 
 <script>
   setTimeout(() => {
-    const teeth = document.getElementById("teeth");
-    if (teeth) teeth.classList.add("show");
+    document.getElementById("teeth").classList.add("show");
   }, 10000);
 </script>
 
