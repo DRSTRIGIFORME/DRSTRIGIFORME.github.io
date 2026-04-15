@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THINK</title>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  #bg-video {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+
+    z-index: -1;
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: opacity 2s ease;
+    filter: brightness(1);
+  }
+
+  #start-btn {
+    color: white;
+    font-size: 2rem;
+    font-family: sans-serif;
+    letter-spacing: 4px;
+
+    background: none;
+    border: 2px solid white;
+    padding: 15px 30px;
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+  }
+
+  #start-btn:hover {
+    background: white;
+    color: black;
+  }
+</style>
+</head>
+
+<body>
+
+<video id="bg-video" loop>
+  <source src="../miscimages/OVERSTIMULATION.mp4" type="video/mp4">
+</video>
+
+<button id="start-btn">think</button>
+
+<script>
+  const btn = document.getElementById("start-btn");
+  const video = document.getElementById("bg-video");
+
+  let audioCtx, analyser, source, dataArray;
+
+  btn.addEventListener("click", async () => {
+
+    await video.play();
+    video.style.opacity = "1";
+
+    btn.style.opacity = "0";
+    setTimeout(() => btn.style.display = "none", 500);
+
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    source = audioCtx.createMediaElementSource(video);
+    analyser = audioCtx.createAnalyser();
+
+    source.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    analyser.fftSize = 256;
+    dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    animate();
+  });
+
+  function animate() {
+    analyser.getByteFrequencyData(dataArray);
+
+    let sum = 0;
+    for (let i = 0; i < dataArray.length; i++) {
+      sum += dataArray[i];
+    }
+    let avg = sum / dataArray.length;
+
+    let brightness = 0.7 + (avg / 255) * 0.8;
+
+    video.style.filter = `brightness(${brightness})`;
+
+    requestAnimationFrame(animate);
+  }
+</script>
+
+</body>
+</html>
