@@ -88,24 +88,33 @@
     analyser.fftSize = 256;
     dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-    animate();
-  });
+    let smooth = 0;
 
-  function animate() {
-    analyser.getByteFrequencyData(dataArray);
+    function animate() {
+      analyser.getByteFrequencyData(dataArray);
 
-    let sum = 0;
-    for (let i = 0; i < dataArray.length; i++) {
-      sum += dataArray[i];
+      let sum = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        sum += dataArray[i];
+      }
+      let avg = sum / dataArray.length;
+
+      let normalized = avg / 255;
+
+      smooth = smooth * 0.9 + normalized * 0.1;
+
+      let contrast = 1 + smooth * 1.5;
+      let blur = smooth * 4;
+      let scale = 1 + smooth * 0.05;
+
+      video.style.filter = `contrast(${contrast}) blur(${blur}px)`;
+      video.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+      requestAnimationFrame(animate);
     }
-    let avg = sum / dataArray.length;
 
-    let brightness = 0.3 + (avg / 255) * 1.5;
-
-    video.style.filter = `brightness(${brightness})`;
-
-    requestAnimationFrame(animate);
-  }
+    animate(); 
+  });
 </script>
 
 </body>
