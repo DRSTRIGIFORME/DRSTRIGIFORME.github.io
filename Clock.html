@@ -253,7 +253,7 @@ function update(){
     document.getElementById("latin").textContent = latin;
 
     /* DISPLAY HOUR WITHIN PHASE */
-    const displayHour = hour % 8;
+const displayHour = (hour % 8) + 1;
 
     document.getElementById("time").textContent =
         String(displayHour).padStart(2,"0")+":"+
