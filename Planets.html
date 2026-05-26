@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planetary System</title>
+<title>Planetary Clock</title>
 
 <style>
 
@@ -29,7 +29,6 @@ body {
     border: 1px solid rgba(255,0,0,0.5);
     padding: 6px 12px;
     border-radius: 6px;
-    z-index: 999;
 }
 
 /* SYSTEM */
@@ -62,6 +61,16 @@ body {
     transform: translate(-50%, -50%);
 }
 
+#orbitEarth {
+    width: 260px;
+    height: 260px;
+}
+
+#orbitMars {
+    width: 360px;
+    height: 360px;
+}
+
 /* PLANETS */
 .planet {
     position: absolute;
@@ -69,12 +78,6 @@ body {
     height: 16px;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-}
-
-/* COLORS */
-#venus {
-    background: #ffdd66;
-    box-shadow: 0 0 12px #ffdd66;
 }
 
 #earth {
@@ -87,20 +90,17 @@ body {
     box-shadow: 0 0 12px #ff4444;
 }
 
-/* ORBIT SIZES */
-#orbitVenus {
-    width: 160px;
-    height: 160px;
-}
-
-#orbitEarth {
-    width: 260px;
-    height: 260px;
-}
-
-#orbitMars {
-    width: 360px;
-    height: 360px;
+/* INFO BOXES */
+.planet-box {
+    position: absolute;
+    background: rgba(0,0,0,0.85);
+    color: #eee;
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    border-radius: 6px;
+    pointer-events: none;
+    white-space: nowrap;
 }
 
 </style>
@@ -112,79 +112,123 @@ body {
 
 <div class="system">
 
-    <!-- SUN -->
     <div class="sun"></div>
 
-    <!-- ORBITS -->
-    <div id="orbitVenus" class="orbit"></div>
     <div id="orbitEarth" class="orbit"></div>
     <div id="orbitMars" class="orbit"></div>
 
-    <!-- PLANETS -->
-    <div id="venus" class="planet"></div>
     <div id="earth" class="planet"></div>
     <div id="mars" class="planet"></div>
 
-</div>
+    <div id="earthBox" class="planet-box"></div>
+    <div id="marsBox" class="planet-box"></div>
 
+</div>
 
 <script>
 
-// Days since J2000 epoch (Jan 1 2000)
+/* ---------- TIME SYSTEM ---------- */
+
+const dayLengths = {
+    earth: 24,
+    mars: 24.6
+};
+
+function getPlanetTime(dayLengthHours) {
+    const now = Date.now() / 1000;
+
+    const secondsInDay = dayLengthHours * 3600;
+    const t = now % secondsInDay;
+
+    const h = Math.floor(t / 3600);
+    const m = Math.floor((t % 3600) / 60);
+    const s = Math.floor(t % 60);
+
+    return (
+        String(h).padStart(2,"0") + ":" +
+        String(m).padStart(2,"0") + ":" +
+        String(s).padStart(2,"0")
+    );
+}
+
+/* ---------- REAL-ish ORBIT POSITIONS ---------- */
+
 function getDaysSinceJ2000() {
     const now = new Date();
     const J2000 = new Date("2000-01-01T12:00:00Z");
     return (now - J2000) / 86400000;
 }
 
-// Orbital elements (degrees + rates)
-// simplified mean longitude models
-const planets = {
-    venus: {
-        L0: 181.9798,      // base longitude
-        rate: 1.60213034   // deg/day
-    },
-    earth: {
-        L0: 100.4665,
-        rate: 0.98564736
-    },
-    mars: {
-        L0: 355.433,
-        rate: 0.52403295
-    }
-};
+/* ---------- MOVE FUNCTION ---------- */
 
-function movePlanet(id, angle, radius) {
+function movePlanet(id, boxId, angle, radius) {
     const rad = angle * Math.PI / 180;
+
     const x = 300 + Math.cos(rad) * radius;
     const y = 300 + Math.sin(rad) * radius;
 
-    const el = document.getElementById(id);
-    el.style.left = x + "px";
-    el.style.top = y + "px";
+    const p = document.getElementById(id);
+    const b = document.getElementById(boxId);
+
+    p.style.left = x + "px";
+    p.style.top = y + "px";
+
+    b.style.left = (x + 12) + "px";
+    b.style.top = (y + 12) + "px";
 }
+
+/* ---------- MAIN UPDATE ---------- */
 
 function update() {
 
+    const now = new Date();
     const d = getDaysSinceJ2000();
 
-    const venusAngle =
-        (planets.venus.L0 + planets.venus.rate * d) % 360;
+    /* Orbit angles */
+    const earthAngle = (100.4665 + 0.98564736 * d) % 360;
+    const marsAngle = (355.433 + 0.52403295 * d) % 360;
 
-    const earthAngle =
-        (planets.earth.L0 + planets.earth.rate * d) % 360;
+    movePlanet("earth", "earthBox", earthAngle, 130);
+    movePlanet("mars", "marsBox", marsAngle, 180);
 
-    const marsAngle =
-        (planets.mars.L0 + planets.mars.rate * d) % 360;
+    /* ---------- YOUR CALENDAR ---------- */
 
-    movePlanet("venus", venusAngle, 80);
-    movePlanet("earth", earthAngle, 130);
-    movePlanet("mars", marsAngle, 180);
+    const start = new Date(now.getFullYear(),0,0);
+    const dayOfYear = Math.floor((now - start)/86400000);
+
+    const seasons = ["Gel","Sat","Adol","Mess","Nix"];
+
+    const weekdays = [
+        "Saturday","Duday","Treday","Quday",
+        "Kinday","Sesday","Sepday","Finday"
+    ];
+
+    const seasonIndex = Math.floor((dayOfYear-1)/73);
+    const season = seasons[seasonIndex] ?? "???";
+
+    const seasonDay = ((dayOfYear-1)%73)+1;
+    const week = Math.floor((seasonDay-1)/8)+1;
+    const weekday = weekdays[(seasonDay-1)%8];
+
+    const baseText =
+        season + " " + seasonDay + "<br>" +
+        "W" + week + " • " + weekday;
+
+    /* ---------- PLANET TIMES ---------- */
+
+    const earthTime = getPlanetTime(dayLengths.earth);
+    const marsTime = getPlanetTime(dayLengths.mars);
+
+    document.getElementById("earthBox").innerHTML =
+        "Earth<br>" + earthTime + "<br>" + baseText;
+
+    document.getElementById("marsBox").innerHTML =
+        "Mars<br>" + marsTime + "<br>" + baseText;
+
 }
 
 setInterval(update, 50);
 update();
-``
 
 </script>
 
