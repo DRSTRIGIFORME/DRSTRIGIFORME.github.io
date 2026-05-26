@@ -19,10 +19,6 @@ body {
     overflow-x: hidden;
 }
 
-/* ========================= */
-/* MAIN CONTAINER            */
-/* ========================= */
-
 .container {
     position: relative;
     width: 700px;
@@ -31,7 +27,7 @@ body {
 }
 
 /* ========================= */
-/* SACRED GEOMETRY           */
+/* CIRCLE WITH DYNAMIC LIGHT */
 /* ========================= */
 
 .circle {
@@ -39,10 +35,37 @@ body {
     width: 500px;
     height: 500px;
     margin: auto;
-    border: 2px solid rgba(255,255,255,0.15);
     border-radius: 50%;
+
+    background: conic-gradient(
+        from 0deg,
+        #0a0f2a,
+        #0a1a4a,
+        #1a2f7a,
+        #f7d14a,
+        #ffe680,
+        #f7d14a,
+        #1a2f7a,
+        #0a1a4a,
+        #0a0f2a
+    );
+
+    border: 2px solid rgba(255,255,255,0.15);
 }
 
+/* 🔴 TIME RAY */
+.time-ray {
+    position: absolute;
+    width: 2px;
+    height: 250px;
+    background: rgba(255, 60, 60, 0.35);
+    top: 0;
+    left: 50%;
+    transform-origin: bottom center;
+    pointer-events: none;
+}
+
+/* geometry */
 .circle::before,
 .circle::after {
     content: "";
@@ -64,24 +87,7 @@ body {
     left: 0;
 }
 
-.diagonal1,
-.diagonal2 {
-    position: absolute;
-    width: 2px;
-    height: 500px;
-    left: 249px;
-    top: 0;
-    background: rgba(255,255,255,0.08);
-    transform-origin: center;
-}
-
-.diagonal1 { transform: rotate(45deg); }
-.diagonal2 { transform: rotate(-45deg); }
-
-/* ========================= */
-/* SUN + MOON                */
-/* ========================= */
-
+/* SUN + MOON */
 .sun,
 .moon {
     position: absolute;
@@ -108,10 +114,7 @@ body {
                  0 0 20px rgba(200,200,255,0.5);
 }
 
-/* ========================= */
-/* CENTER CLOCK              */
-/* ========================= */
-
+/* CENTER */
 .center {
     position: absolute;
     top: 250px;
@@ -143,10 +146,7 @@ body {
     font-style: italic;
 }
 
-/* ========================= */
-/* CALENDAR                  */
-/* ========================= */
-
+/* CALENDAR */
 .calendar {
     margin-top: 40px;
     text-align: center;
@@ -175,25 +175,14 @@ body {
     color: gold;
 }
 
-/* ========================= */
-/* SPECIAL DAY              */
-/* ========================= */
-
-.SpecialDay {
-    margin-bottom: 15px;
-    padding: 0;
-}
-
+/* SPECIAL DAY */
 .SpecialDay.active {
     border: 1px solid rgba(255, 215, 0, 0.6);
     box-shadow: 0 0 15px rgba(255, 215, 0, 0.25);
     padding: 10px;
 }
 
-/* ========================= */
-/* WEEK GRID                 */
-/* ========================= */
-
+/* WEEK GRID */
 .week-grid {
     margin-top: 40px;
     display: grid;
@@ -214,20 +203,7 @@ body {
     background: rgba(255,215,0,0.06);
 }
 
-.weekday-title {
-    font-size: 0.95rem;
-    color: #aaa;
-    margin-bottom: 6px;
-}
-
-.weekday-symbol {
-    font-size: 1.3rem;
-}
-
-/* ========================= */
-/* SEASON WHEEL              */
-/* ========================= */
-
+/* SEASON WHEEL */
 .season-wheel {
     margin-top: 50px;
     display: flex;
@@ -245,7 +221,6 @@ body {
     justify-content: center;
     align-items: center;
     background: rgba(255,255,255,0.03);
-    transition: 0.3s;
 }
 
 .season-node.active {
@@ -262,8 +237,8 @@ body {
 <div class="container">
 
     <div class="circle">
-        <div class="diagonal1"></div>
-        <div class="diagonal2"></div>
+        <div class="time-ray" id="timeRay"></div>
+
         <div class="sun" id="sun">☉</div>
         <div class="moon" id="moon">☽</div>
     </div>
@@ -276,7 +251,6 @@ body {
     </div>
 
     <div class="calendar">
-
         <div class="SpecialDay" id="SpecialDay">
             <div id="SpecialDayName"></div>
             <div id="SpecialDayDesc"></div>
@@ -309,10 +283,6 @@ body {
 
 <script>
 
-// =========================
-// DATA
-// =========================
-
 const seasons = ["Gel","Sat","Adol","Mess","Nix"];
 
 const weekdays = [
@@ -322,18 +292,13 @@ const weekdays = [
 
 const weekdaySymbols = ["Ⅰ","Ⅱ","Ⅲ","Ⅳ","Ⅴ","Ⅵ","Ⅶ","Ⅷ"];
 
-// FIXED: commas added here
 const specialDates = [
     { day: 1, name: "New Year", description: "Beginning of Gel" },
     { day: 182, name: "Declination", description: "MidYear" },
-    { day: 110, name: "Planting Day", description: "Day for farmers to plant their seeds" },
-    { day: 256, name: "Harvest Day", description: "Day for farmers to harvest food for the cold months" },
-    { day: 365, name: "New Year's Eve", description: "End of the year celebration" }
+    { day: 110, name: "Planting Day", description: "Planting season begins" },
+    { day: 256, name: "Harvest Day", description: "Harvest season begins" },
+    { day: 365, name: "New Year's Eve", description: "End of year celebration" }
 ];
-
-// =========================
-// WEEK GRID
-// =========================
 
 const weekGrid = document.getElementById("weekGrid");
 
@@ -349,10 +314,6 @@ weekdays.forEach((day, i) => {
 
     weekGrid.appendChild(box);
 });
-
-// =========================
-// UPDATE LOOP
-// =========================
 
 function updateClock() {
 
@@ -381,10 +342,8 @@ function updateClock() {
     const om = Math.floor((octal % (64*64)) / 64);
     const os = octal % 64;
 
-    const ternaryHour = oh % 8;
-
     document.getElementById("time").textContent =
-        String(ternaryHour).padStart(2,"0") + ":" +
+        String(oh % 8).padStart(2,"0") + ":" +
         String(om).padStart(2,"0") + ":" +
         String(os).padStart(2,"0");
 
@@ -429,11 +388,23 @@ function updateClock() {
             .classList.toggle("active", i === seasonIndex);
     });
 
-    const radius = 245;
-    const sunAngle = (totalHours/24)*360 - 270;
+    const circle = document.querySelector(".circle");
+    const ray = document.getElementById("timeRay");
 
-    moveBody("sun", sunAngle, radius);
-    moveBody("moon", sunAngle + 180, radius);
+    const sunAngle = (totalHours/24)*360 - 90;
+
+    circle.style.background =
+        `conic-gradient(from ${sunAngle}deg,
+        #f7d14a,
+        #0a1a4a,
+        #0a0f2a,
+        #0a1a4a,
+        #f7d14a)`;
+
+    ray.style.transform = `rotate(${sunAngle}deg)`;
+
+    moveBody("sun", sunAngle, 245);
+    moveBody("moon", sunAngle + 180, 245);
 }
 
 function moveBody(id, angle, radius) {
