@@ -176,7 +176,7 @@ body {
 }
 
 /* ========================= */
-/* SPECIAL DAY FIX           */
+/* SPECIAL DAY              */
 /* ========================= */
 
 .SpecialDay {
@@ -270,7 +270,6 @@ body {
 
     <div class="center">
         <div class="symbols">☉ ⟁ ☽</div>
-
         <div class="time" id="time">00:00:00</div>
         <div class="phase" id="phase">I.M.</div>
         <div class="latin" id="latin">In Mane</div>
@@ -323,11 +322,12 @@ const weekdays = [
 
 const weekdaySymbols = ["Ⅰ","Ⅱ","Ⅲ","Ⅳ","Ⅴ","Ⅵ","Ⅶ","Ⅷ"];
 
+// FIXED: commas added here
 const specialDates = [
     { day: 1, name: "New Year", description: "Beginning of Gel" },
     { day: 182, name: "Declination", description: "MidYear" },
-    { day: 110, name: "Planting Day", description: "Day for farmers to plant their seeds" }
-    { day: 256, name: "Harvest day", description: "Day for farmers to harvest food for the cold months" }
+    { day: 110, name: "Planting Day", description: "Day for farmers to plant their seeds" },
+    { day: 256, name: "Harvest Day", description: "Day for farmers to harvest food for the cold months" },
     { day: 365, name: "New Year's Eve", description: "End of the year celebration" }
 ];
 
@@ -364,7 +364,6 @@ function updateClock() {
 
     const totalHours = h + m/60 + s/3600;
 
-    // phases
     let phase = "", latin = "";
     if (h < 8) { phase = "I.M."; latin = "In Mane"; }
     else if (h < 16) { phase = "I.D."; latin = "In Die"; }
@@ -373,7 +372,6 @@ function updateClock() {
     document.getElementById("phase").textContent = phase;
     document.getElementById("latin").textContent = latin;
 
-    // octal time
     const realSeconds = h*3600 + m*60 + s;
     const octalTotal = 24*64*64;
 
@@ -390,11 +388,9 @@ function updateClock() {
         String(om).padStart(2,"0") + ":" +
         String(os).padStart(2,"0");
 
-    // calendar
     const start = new Date(now.getFullYear(),0,0);
     const dayOfYear = Math.floor((now - start) / 86400000);
 
-    // special day FIX
     const festival = specialDates.find(f => f.day === dayOfYear);
 
     const box = document.getElementById("SpecialDay");
@@ -411,7 +407,6 @@ function updateClock() {
         desc.textContent = "";
     }
 
-    // seasons
     const seasonIndex = Math.floor((dayOfYear-1)/73);
     const season = seasons[seasonIndex] ?? "???";
 
@@ -424,18 +419,16 @@ function updateClock() {
     document.getElementById("weekNum").textContent = week;
     document.getElementById("weekdayName").textContent = weekdays[weekdayIndex];
 
-    // highlights
     weekdays.forEach((_, i) => {
-        const el = document.getElementById("weekday"+i);
-        el.classList.toggle("active", i === weekdayIndex);
+        document.getElementById("weekday"+i)
+            .classList.toggle("active", i === weekdayIndex);
     });
 
     seasons.forEach((_, i) => {
-        const el = document.getElementById("season"+i);
-        el.classList.toggle("active", i === seasonIndex);
+        document.getElementById("season"+i)
+            .classList.toggle("active", i === seasonIndex);
     });
 
-    // sun + moon
     const radius = 245;
     const sunAngle = (totalHours/24)*360 - 270;
 
@@ -448,12 +441,10 @@ function moveBody(id, angle, radius) {
     const x = 250 + Math.cos(r) * radius;
     const y = 250 + Math.sin(r) * radius;
 
-    const el = document.getElementById(id);
-    el.style.left = x + "px";
-    el.style.top = y + "px";
+    document.getElementById(id).style.left = x + "px";
+    document.getElementById(id).style.top = y + "px";
 }
 
-// start
 setInterval(updateClock, 1000);
 updateClock();
 
