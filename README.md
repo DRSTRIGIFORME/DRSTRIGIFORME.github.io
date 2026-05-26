@@ -1,2 +1,2 @@
-# PerLeD
-Personal Learning Database
+# PerKD
+Personal Knowledge Database
