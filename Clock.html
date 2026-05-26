@@ -19,7 +19,7 @@ body {
     overflow-x: hidden;
 }
 
-/* 🔴 BACK */
+/* BACK BUTTON */
 .back-arrow {
     position: fixed;
     top: 15px;
@@ -33,10 +33,7 @@ body {
     z-index: 999;
 }
 
-/* ========================= */
 /* MAIN */
-/* ========================= */
-
 .container {
     position: relative;
     width: 700px;
@@ -44,10 +41,7 @@ body {
     padding-top: 30px;
 }
 
-/* ========================= */
-/* CIRCLE LIGHT FIELD */
-/* ========================= */
-
+/* CIRCLE */
 .circle {
     position: relative;
     width: 500px;
@@ -58,29 +52,7 @@ body {
     overflow: hidden;
 }
 
-/* cross lines */
-.circle::before,
-.circle::after {
-    content: "";
-    position: absolute;
-    background: rgba(255,255,255,0.12);
-}
-
-.circle::before {
-    width: 2px;
-    height: 100%;
-    left: 50%;
-    top: 0;
-}
-
-.circle::after {
-    height: 2px;
-    width: 100%;
-    top: 50%;
-    left: 0;
-}
-
-/* SUN + MOON */
+/* SUN MOON */
 .sun,
 .moon {
     position: absolute;
@@ -108,14 +80,11 @@ body {
     width: 320px;
 }
 
-.time {
-    font-size: 4.5rem;
-}
+.time { font-size: 4.5rem; }
+.phase { font-size: 2rem; margin-top: 10px; }
+.latin { color: #888; }
 
-/* ========================= */
 /* CALENDAR */
-/* ========================= */
-
 .calendar {
     margin-top: 40px;
     text-align: center;
@@ -124,19 +93,22 @@ body {
 .season {
     font-size: 2.2rem;
     color: #cc4444;
-    letter-spacing: 0.2rem;
 }
 
-.day-number,
-.week-info,
-.weekday {
-    margin-top: 10px;
+/* SPECIAL DAY BOX */
+.SpecialDay {
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid transparent;
+    transition: 0.3s;
 }
 
-/* ========================= */
+.SpecialDay.active {
+    border: 1px solid rgba(255,215,0,0.7);
+    box-shadow: 0 0 15px rgba(255,215,0,0.25);
+}
+
 /* WEEK GRID */
-/* ========================= */
-
 .week-grid {
     margin-top: 40px;
     display: grid;
@@ -193,10 +165,19 @@ body {
     </div>
 
     <div class="center">
-        <div class="time" id="time">00:00:00</div>
+        <div id="time" class="time">00:00:00</div>
+        <div id="phase" class="phase">I.M.</div>
+        <div id="latin" class="latin">In Mane</div>
     </div>
 
     <div class="calendar">
+
+        <!-- SPECIAL DAY -->
+        <div class="SpecialDay" id="SpecialDay">
+            <div id="SpecialDayName"></div>
+            <div id="SpecialDayDesc"></div>
+        </div>
+
         <div class="season" id="seasonName">GEL</div>
         <div>Day <span id="seasonDay">1</span></div>
         <div>Week <span id="weekNum">1</span></div>
@@ -226,6 +207,14 @@ const weekdays = [
 
 const symbols = ["Ⅰ","Ⅱ","Ⅲ","Ⅳ","Ⅴ","Ⅵ","Ⅶ","Ⅷ"];
 
+const specialDates = [
+    { day: 1, name: "New Year", description: "Beginning of Gel" },
+    { day: 182, name: "Declination", description: "Midyear equilibrium shift" },
+    { day: 110, name: "Planting Day", description: "Agricultural cycle begins" },
+    { day: 256, name: "Harvest Day", description: "Gathering season begins" },
+    { day: 365, name: "Year’s End", description: "Cycle closes" }
+];
+
 const weekGrid = document.getElementById("weekGrid");
 
 weekdays.forEach((d,i)=>{
@@ -239,19 +228,34 @@ weekdays.forEach((d,i)=>{
 function update(){
 
     const now = new Date();
+
     const h = now.getHours();
     const m = now.getMinutes();
     const s = now.getSeconds();
 
-    const totalHours = h + m/60 + s/3600;
+    /* PHASE */
+    let phase = "", latin = "";
 
+    if (h < 8) { phase = "I.M."; latin = "In Mane"; }
+    else if (h < 16) { phase = "I.D."; latin = "In Die"; }
+    else { phase = "A.V."; latin = "Ad Vespereum"; }
+
+    document.getElementById("phase").textContent = phase;
+    document.getElementById("latin").textContent = latin;
+
+    /* TIME */
+    document.getElementById("time").textContent =
+        String(h).padStart(2,"0")+":"+
+        String(m).padStart(2,"0")+":"+
+        String(s).padStart(2,"0");
+
+    const totalHours = h + m/60 + s/3600;
     const sunAngle = (totalHours/24)*360 - 90;
 
     move("sun", sunAngle, 245);
-    move("moon", sunAngle+180, 245);
+    move("moon", sunAngle + 180, 245);
 
-    // 🌞 + 🌙 LIGHT FIELD (FIXED CORRECT MODEL)
-
+    /* LIGHT FIELD */
     const circle = document.getElementById("circle");
 
     const sunX = 50 + Math.cos(sunAngle*Math.PI/180)*50;
@@ -274,12 +278,7 @@ function update(){
         #050714
     `;
 
-    document.getElementById("time").textContent =
-        String(h).padStart(2,"0")+":"+
-        String(m).padStart(2,"0")+":"+
-        String(s).padStart(2,"0");
-
-    // season logic (unchanged core)
+    /* DATE */
     const start = new Date(now.getFullYear(),0,0);
     const dayOfYear = Math.floor((now - start)/86400000);
 
@@ -295,6 +294,24 @@ function update(){
     document.getElementById("weekNum").textContent = week;
     document.getElementById("weekdayName").textContent = weekdays[weekdayIndex];
 
+    /* SPECIAL DAYS FIXED */
+    const special = specialDates.find(d => d.day === dayOfYear);
+
+    const box = document.getElementById("SpecialDay");
+    const n = document.getElementById("SpecialDayName");
+    const desc = document.getElementById("SpecialDayDesc");
+
+    if (special) {
+        box.classList.add("active");
+        n.textContent = special.name;
+        desc.textContent = special.description;
+    } else {
+        box.classList.remove("active");
+        n.textContent = "";
+        desc.textContent = "";
+    }
+
+    /* HIGHLIGHTS */
     weekdays.forEach((_,i)=>
         document.getElementById("weekday"+i)
         .classList.toggle("active", i===weekdayIndex)
