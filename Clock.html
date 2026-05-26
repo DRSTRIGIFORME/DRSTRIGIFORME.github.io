@@ -19,7 +19,7 @@ body {
     overflow-x: hidden;
 }
 
-/* 🔴 BACK BUTTON */
+/* 🔴 BACK */
 .back-arrow {
     position: fixed;
     top: 15px;
@@ -34,7 +34,7 @@ body {
 }
 
 /* ========================= */
-/* MAIN LAYOUT */
+/* MAIN */
 /* ========================= */
 
 .container {
@@ -45,7 +45,7 @@ body {
 }
 
 /* ========================= */
-/* CIRCLE (LIGHT FIELD) */
+/* CIRCLE LIGHT FIELD */
 /* ========================= */
 
 .circle {
@@ -58,7 +58,7 @@ body {
     overflow: hidden;
 }
 
-/* geometry lines */
+/* cross lines */
 .circle::before,
 .circle::after {
     content: "";
@@ -95,19 +95,10 @@ body {
     transition: all 0.5s linear;
 }
 
-.sun {
-    color: gold;
-    text-shadow: 0 0 10px rgba(255,215,0,0.8),
-                 0 0 20px rgba(255,215,0,0.5);
-}
+.sun { color: gold; }
+.moon { color: silver; }
 
-.moon {
-    color: silver;
-    text-shadow: 0 0 10px rgba(200,200,255,0.8),
-                 0 0 20px rgba(200,200,255,0.5);
-}
-
-/* CENTER CLOCK */
+/* CENTER */
 .center {
     position: absolute;
     top: 250px;
@@ -164,7 +155,7 @@ body {
     box-shadow: 0 0 15px rgba(255,215,0,0.25);
 }
 
-/* SEASON WHEEL */
+/* SEASONS */
 .season-wheel {
     margin-top: 50px;
     display: flex;
@@ -207,9 +198,9 @@ body {
 
     <div class="calendar">
         <div class="season" id="seasonName">GEL</div>
-        <div class="day-number">Day <span id="seasonDay">1</span></div>
-        <div class="week-info">Week <span id="weekNum">1</span></div>
-        <div class="weekday" id="weekdayName">Unday</div>
+        <div>Day <span id="seasonDay">1</span></div>
+        <div>Week <span id="weekNum">1</span></div>
+        <div id="weekdayName">Unday</div>
     </div>
 
     <div class="week-grid" id="weekGrid"></div>
@@ -233,80 +224,98 @@ const weekdays = [
     "Kinday","Sesday","Sepday","Finday"
 ];
 
-const weekdaySymbols = ["Ⅰ","Ⅱ","Ⅲ","Ⅳ","Ⅴ","Ⅵ","Ⅶ","Ⅷ"];
+const symbols = ["Ⅰ","Ⅱ","Ⅲ","Ⅳ","Ⅴ","Ⅵ","Ⅶ","Ⅷ"];
 
 const weekGrid = document.getElementById("weekGrid");
 
-weekdays.forEach((day, i) => {
-    const box = document.createElement("div");
-    box.className = "weekday-box";
-    box.id = "weekday" + i;
-
-    box.innerHTML = `
-        <div>${day}</div>
-        <div>${weekdaySymbols[i]}</div>
-    `;
-
-    weekGrid.appendChild(box);
+weekdays.forEach((d,i)=>{
+    const el = document.createElement("div");
+    el.className = "weekday-box";
+    el.id = "weekday"+i;
+    el.innerHTML = `<div>${d}</div><div>${symbols[i]}</div>`;
+    weekGrid.appendChild(el);
 });
 
-function update() {
+function update(){
 
     const now = new Date();
-
     const h = now.getHours();
     const m = now.getMinutes();
     const s = now.getSeconds();
 
     const totalHours = h + m/60 + s/3600;
 
-    const sunAngle = (totalHours / 24) * 360 - 90;
+    const sunAngle = (totalHours/24)*360 - 90;
 
     move("sun", sunAngle, 245);
-    move("moon", sunAngle + 180, 245);
+    move("moon", sunAngle+180, 245);
 
-    // =========================
-    // 🌗 REAL LIGHT FIELD (FIXED MODEL)
-    // =========================
+    // 🌞 + 🌙 LIGHT FIELD (FIXED CORRECT MODEL)
 
     const circle = document.getElementById("circle");
 
-    const sunX = 50 + Math.cos(sunAngle * Math.PI/180) * 50;
-    const sunY = 50 + Math.sin(sunAngle * Math.PI/180) * 50;
+    const sunX = 50 + Math.cos(sunAngle*Math.PI/180)*50;
+    const sunY = 50 + Math.sin(sunAngle*Math.PI/180)*50;
 
-    const moonX = 50 + Math.cos((sunAngle+180) * Math.PI/180) * 50;
-    const moonY = 50 + Math.sin((sunAngle+180) * Math.PI/180) * 50;
+    const moonX = 50 + Math.cos((sunAngle+180)*Math.PI/180)*50;
+    const moonY = 50 + Math.sin((sunAngle+180)*Math.PI/180)*50;
 
     circle.style.background = `
         radial-gradient(circle at ${sunX}% ${sunY}%,
-            rgba(255, 220, 90, 0.9),
-            rgba(255, 200, 80, 0.2),
+            rgba(255,220,90,0.9),
+            rgba(255,200,80,0.2),
             transparent 60%
         ),
         radial-gradient(circle at ${moonX}% ${moonY}%,
-            rgba(90, 120, 255, 0.35),
-            rgba(30, 60, 160, 0.25),
+            rgba(90,120,255,0.35),
+            rgba(30,60,160,0.25),
             transparent 60%
         ),
         #050714
     `;
 
     document.getElementById("time").textContent =
-        String(h).padStart(2,"0") + ":" +
-        String(m).padStart(2,"0") + ":" +
+        String(h).padStart(2,"0")+":"+
+        String(m).padStart(2,"0")+":"+
         String(s).padStart(2,"0");
+
+    // season logic (unchanged core)
+    const start = new Date(now.getFullYear(),0,0);
+    const dayOfYear = Math.floor((now - start)/86400000);
+
+    const seasonIndex = Math.floor((dayOfYear-1)/73);
+    const season = seasons[seasonIndex] ?? "???";
+
+    const seasonDay = ((dayOfYear-1)%73)+1;
+    const week = Math.floor((seasonDay-1)/8)+1;
+    const weekdayIndex = (seasonDay-1)%8;
+
+    document.getElementById("seasonName").textContent = season;
+    document.getElementById("seasonDay").textContent = seasonDay;
+    document.getElementById("weekNum").textContent = week;
+    document.getElementById("weekdayName").textContent = weekdays[weekdayIndex];
+
+    weekdays.forEach((_,i)=>
+        document.getElementById("weekday"+i)
+        .classList.toggle("active", i===weekdayIndex)
+    );
+
+    seasons.forEach((_,i)=>
+        document.getElementById("season"+i)
+        .classList.toggle("active", i===seasonIndex)
+    );
 }
 
-function move(id, angle, radius) {
-    const r = angle * Math.PI / 180;
-    const x = 250 + Math.cos(r) * radius;
-    const y = 250 + Math.sin(r) * radius;
+function move(id,angle,r){
+    const rad = angle*Math.PI/180;
+    const x = 250 + Math.cos(rad)*r;
+    const y = 250 + Math.sin(rad)*r;
 
-    document.getElementById(id).style.left = x + "px";
-    document.getElementById(id).style.top = y + "px";
+    document.getElementById(id).style.left = x+"px";
+    document.getElementById(id).style.top = y+"px";
 }
 
-setInterval(update, 1000);
+setInterval(update,1000);
 update();
 
 </script>
