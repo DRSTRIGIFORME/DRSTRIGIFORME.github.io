@@ -171,6 +171,7 @@ body {
     </div>
 
     <div class="calendar">
+
         <div class="SpecialDay" id="SpecialDay">
             <div id="SpecialDayName"></div>
             <div id="SpecialDayDesc"></div>
@@ -227,7 +228,7 @@ function update(){
 
     const now = new Date();
 
-    /* ---------- CUSTOM TIME SYSTEM ---------- */
+    /* ---------- CUSTOM TIME SYSTEM (ONLY CHANGE) ---------- */
 
     const realSeconds =
         now.getHours()*3600 +
@@ -235,7 +236,6 @@ function update(){
         now.getSeconds();
 
     const totalUnits = 24 * 64 * 64;
-
     const unit = (realSeconds / 86400) * totalUnits;
 
     const hour = Math.floor(unit / (64*64));
@@ -252,26 +252,28 @@ function update(){
     document.getElementById("phase").textContent = phase;
     document.getElementById("latin").textContent = latin;
 
-    /* DISPLAY TIME (decimal) */
+    /* DISPLAY HOUR WITHIN PHASE */
+    const displayHour = hour % 8;
+
     document.getElementById("time").textContent =
-        String(hour).padStart(2,"0")+":"+
+        String(displayHour).padStart(2,"0")+":"+
         String(minute).padStart(2,"0")+":"+
         String(second).padStart(2,"0");
 
-    /* SUN / MOON POSITION */
-    const angle = (unit / totalUnits) * 360 - 90;
+    /* SUN POSITION */
+    const sunAngle = (unit / totalUnits)*360 - 90;
 
-    move("sun", angle, 245);
-    move("moon", angle + 180, 245);
+    move("sun", sunAngle, 245);
+    move("moon", sunAngle + 180, 245);
 
     /* LIGHT FIELD */
     const circle = document.getElementById("circle");
 
-    const sunX = 50 + Math.cos(angle*Math.PI/180)*50;
-    const sunY = 50 + Math.sin(angle*Math.PI/180)*50;
+    const sunX = 50 + Math.cos(sunAngle*Math.PI/180)*50;
+    const sunY = 50 + Math.sin(sunAngle*Math.PI/180)*50;
 
-    const moonX = 50 + Math.cos((angle+180)*Math.PI/180)*50;
-    const moonY = 50 + Math.sin((angle+180)*Math.PI/180)*50;
+    const moonX = 50 + Math.cos((sunAngle+180)*Math.PI/180)*50;
+    const moonY = 50 + Math.sin((sunAngle+180)*Math.PI/180)*50;
 
     circle.style.background = `
         radial-gradient(circle at ${sunX}% ${sunY}%,
@@ -287,7 +289,7 @@ function update(){
         #050714
     `;
 
-    /* DATE */
+    /* DATE (UNCHANGED) */
     const start = new Date(now.getFullYear(),0,0);
     const dayOfYear = Math.floor((now - start)/86400000);
 
@@ -346,3 +348,4 @@ update();
 
 </body>
 </html>
+``
