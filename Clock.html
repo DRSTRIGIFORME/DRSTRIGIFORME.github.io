@@ -171,8 +171,6 @@ body {
     </div>
 
     <div class="calendar">
-
-        <!-- SPECIAL DAY -->
         <div class="SpecialDay" id="SpecialDay">
             <div id="SpecialDayName"></div>
             <div id="SpecialDayDesc"></div>
@@ -229,40 +227,51 @@ function update(){
 
     const now = new Date();
 
-    const h = now.getHours();
-    const m = now.getMinutes();
-    const s = now.getSeconds();
+    /* ---------- CUSTOM TIME SYSTEM ---------- */
+
+    const realSeconds =
+        now.getHours()*3600 +
+        now.getMinutes()*60 +
+        now.getSeconds();
+
+    const totalUnits = 24 * 64 * 64;
+
+    const unit = (realSeconds / 86400) * totalUnits;
+
+    const hour = Math.floor(unit / (64*64));
+    const minute = Math.floor((unit % (64*64)) / 64);
+    const second = Math.floor(unit % 64);
 
     /* PHASE */
     let phase = "", latin = "";
 
-    if (h < 8) { phase = "I.M."; latin = "In Mane"; }
-    else if (h < 16) { phase = "I.D."; latin = "In Die"; }
+    if (hour < 8) { phase = "I.M."; latin = "In Mane"; }
+    else if (hour < 16) { phase = "I.D."; latin = "In Die"; }
     else { phase = "A.V."; latin = "Ad Vespereum"; }
 
     document.getElementById("phase").textContent = phase;
     document.getElementById("latin").textContent = latin;
 
-    /* TIME */
+    /* DISPLAY TIME (decimal) */
     document.getElementById("time").textContent =
-        String(h).padStart(2,"0")+":"+
-        String(m).padStart(2,"0")+":"+
-        String(s).padStart(2,"0");
+        String(hour).padStart(2,"0")+":"+
+        String(minute).padStart(2,"0")+":"+
+        String(second).padStart(2,"0");
 
-    const totalHours = h + m/60 + s/3600;
-    const sunAngle = (totalHours/24)*360 - 90;
+    /* SUN / MOON POSITION */
+    const angle = (unit / totalUnits) * 360 - 90;
 
-    move("sun", sunAngle, 245);
-    move("moon", sunAngle + 180, 245);
+    move("sun", angle, 245);
+    move("moon", angle + 180, 245);
 
     /* LIGHT FIELD */
     const circle = document.getElementById("circle");
 
-    const sunX = 50 + Math.cos(sunAngle*Math.PI/180)*50;
-    const sunY = 50 + Math.sin(sunAngle*Math.PI/180)*50;
+    const sunX = 50 + Math.cos(angle*Math.PI/180)*50;
+    const sunY = 50 + Math.sin(angle*Math.PI/180)*50;
 
-    const moonX = 50 + Math.cos((sunAngle+180)*Math.PI/180)*50;
-    const moonY = 50 + Math.sin((sunAngle+180)*Math.PI/180)*50;
+    const moonX = 50 + Math.cos((angle+180)*Math.PI/180)*50;
+    const moonY = 50 + Math.sin((angle+180)*Math.PI/180)*50;
 
     circle.style.background = `
         radial-gradient(circle at ${sunX}% ${sunY}%,
@@ -294,7 +303,6 @@ function update(){
     document.getElementById("weekNum").textContent = week;
     document.getElementById("weekdayName").textContent = weekdays[weekdayIndex];
 
-    /* SPECIAL DAYS FIXED */
     const special = specialDates.find(d => d.day === dayOfYear);
 
     const box = document.getElementById("SpecialDay");
@@ -311,7 +319,6 @@ function update(){
         desc.textContent = "";
     }
 
-    /* HIGHLIGHTS */
     weekdays.forEach((_,i)=>
         document.getElementById("weekday"+i)
         .classList.toggle("active", i===weekdayIndex)
