@@ -18,27 +18,12 @@ body {
     height: 100vh;
 }
 
-/* BACK BUTTON */
-.back-arrow {
-    position: fixed;
-    top: 15px;
-    left: 15px;
-    font-size: 2rem;
-    color: red;
-    text-decoration: none;
-    border: 1px solid rgba(255,0,0,0.5);
-    padding: 6px 12px;
-    border-radius: 6px;
-}
-
-/* SYSTEM */
 .system {
     position: relative;
     width: 600px;
     height: 600px;
 }
 
-/* SUN */
 .sun {
     position: absolute;
     top: 50%;
@@ -51,7 +36,6 @@ body {
     box-shadow: 0 0 30px gold, 0 0 60px orange;
 }
 
-/* ORBITS */
 .orbit {
     position: absolute;
     border: 1px solid rgba(255,255,255,0.15);
@@ -61,17 +45,9 @@ body {
     transform: translate(-50%, -50%);
 }
 
-#orbitEarth {
-    width: 260px;
-    height: 260px;
-}
+#orbitEarth { width: 260px; height: 260px; }
+#orbitMars { width: 360px; height: 360px; }
 
-#orbitMars {
-    width: 360px;
-    height: 360px;
-}
-
-/* PLANETS */
 .planet {
     position: absolute;
     width: 16px;
@@ -90,7 +66,6 @@ body {
     box-shadow: 0 0 12px #ff4444;
 }
 
-/* INFO BOXES */
 .planet-box {
     position: absolute;
     background: rgba(0,0,0,0.85);
@@ -99,7 +74,6 @@ body {
     padding: 6px 10px;
     font-size: 0.75rem;
     border-radius: 6px;
-    pointer-events: none;
     white-space: nowrap;
 }
 
@@ -107,8 +81,6 @@ body {
 </head>
 
 <body>
-
-<a class="back-arrow" href="index.html">←</a>
 
 <div class="system">
 
@@ -127,31 +99,66 @@ body {
 
 <script>
 
-/* ---------- TIME SYSTEM ---------- */
+/* ---------- PERKD TIME + DATE ---------- */
 
-const dayLengths = {
-    earth: 24,
-    mars: 24.6
-};
+const seasons = ["Gel","Sat","Adol","Mess","Nix"];
+const weekdays = [
+    "Saturday","Duday","Treday","Quday",
+    "Kinday","Sesday","Sepday","Finday"
+];
 
-function getPlanetTime(dayLengthHours) {
-    const now = Date.now() / 1000;
+function getPerKD() {
 
-    const secondsInDay = dayLengthHours * 3600;
-    const t = now % secondsInDay;
+    const now = new Date();
 
-    const h = Math.floor(t / 3600);
-    const m = Math.floor((t % 3600) / 60);
-    const s = Math.floor(t % 60);
+    /* TIME */
+    const realSeconds =
+        now.getHours()*3600 +
+        now.getMinutes()*60 +
+        now.getSeconds();
 
-    return (
-        String(h).padStart(2,"0") + ":" +
-        String(m).padStart(2,"0") + ":" +
-        String(s).padStart(2,"0")
-    );
+    const totalUnits = 24 * 64 * 64;
+    const unit = (realSeconds / 86400) * totalUnits;
+
+    const hour = Math.floor(unit / (64*64));
+    const minute = Math.floor((unit % (64*64)) / 64);
+    const second = Math.floor(unit % 64);
+
+    /* ✅ FIXED HERE */
+    const displayHour = (hour % 8) + 1;
+
+    let phase = "";
+    if (hour < 8) phase = "I.M.";
+    else if (hour < 16) phase = "I.D.";
+    else phase = "A.V.";
+
+    const timeStr =
+        String(displayHour).padStart(2,"0")+":"+
+        String(minute).padStart(2,"0")+":"+
+        String(second).padStart(2,"0");
+
+    /* DATE */
+    const start = new Date(now.getFullYear(),0,0);
+    const dayOfYear = Math.floor((now - start)/86400000);
+
+    const seasonIndex = Math.floor((dayOfYear-1)/73);
+    const season = seasons[seasonIndex] ?? "???";
+
+    const seasonDay = ((dayOfYear-1)%73)+1;
+    const week = Math.floor((seasonDay-1)/8)+1;
+    const weekday = weekdays[(seasonDay-1)%8];
+
+    return {
+        time: timeStr,
+        phase,
+        season,
+        seasonDay,
+        week,
+        weekday
+    };
 }
 
-/* ---------- REAL-ish ORBIT POSITIONS ---------- */
+/* ---------- ORBIT ---------- */
 
 function getDaysSinceJ2000() {
     const now = new Date();
@@ -159,9 +166,8 @@ function getDaysSinceJ2000() {
     return (now - J2000) / 86400000;
 }
 
-/* ---------- MOVE FUNCTION ---------- */
-
 function movePlanet(id, boxId, angle, radius) {
+
     const rad = angle * Math.PI / 180;
 
     const x = 300 + Math.cos(rad) * radius;
@@ -177,57 +183,34 @@ function movePlanet(id, boxId, angle, radius) {
     b.style.top = (y + 12) + "px";
 }
 
-/* ---------- MAIN UPDATE ---------- */
+/* ---------- MAIN ---------- */
 
 function update() {
 
-    const now = new Date();
     const d = getDaysSinceJ2000();
 
-    /* Orbit angles */
     const earthAngle = (100.4665 + 0.98564736 * d) % 360;
     const marsAngle = (355.433 + 0.52403295 * d) % 360;
 
-    movePlanet("earth", "earthBox", earthAngle, 130);
-    movePlanet("mars", "marsBox", marsAngle, 180);
+    movePlanet("earth","earthBox",earthAngle,130);
+    movePlanet("mars","marsBox",marsAngle,180);
 
-    /* ---------- YOUR CALENDAR ---------- */
+    const t = getPerKD();
 
-    const start = new Date(now.getFullYear(),0,0);
-    const dayOfYear = Math.floor((now - start)/86400000);
-
-    const seasons = ["Gel","Sat","Adol","Mess","Nix"];
-
-    const weekdays = [
-        "Saturday","Duday","Treday","Quday",
-        "Kinday","Sesday","Sepday","Finday"
-    ];
-
-    const seasonIndex = Math.floor((dayOfYear-1)/73);
-    const season = seasons[seasonIndex] ?? "???";
-
-    const seasonDay = ((dayOfYear-1)%73)+1;
-    const week = Math.floor((seasonDay-1)/8)+1;
-    const weekday = weekdays[(seasonDay-1)%8];
-
-    const baseText =
-        season + " " + seasonDay + "<br>" +
-        "W" + week + " • " + weekday;
-
-    /* ---------- PLANET TIMES ---------- */
-
-    const earthTime = getPlanetTime(dayLengths.earth);
-    const marsTime = getPlanetTime(dayLengths.mars);
+    const text =
+        t.time + "<br>" +
+        t.phase + "<br>" +
+        t.season + " " + t.seasonDay + "<br>" +
+        "W" + t.week + " • " + t.weekday;
 
     document.getElementById("earthBox").innerHTML =
-        "Earth<br>" + earthTime + "<br>" + baseText;
+        "Earth<br>" + text;
 
     document.getElementById("marsBox").innerHTML =
-        "Mars<br>" + marsTime + "<br>" + baseText;
-
+        "Mars<br>" + text;
 }
 
-setInterval(update, 50);
+setInterval(update,50);
 update();
 
 </script>
