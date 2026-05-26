@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planetary System</title>
+
+<style>
+
+body {
+    margin: 0;
+    background: #050505;
+    color: #eee;
+    font-family: "Times New Roman", serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* BACK BUTTON */
+.back-arrow {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    font-size: 2rem;
+    color: red;
+    text-decoration: none;
+    border: 1px solid rgba(255,0,0,0.5);
+    padding: 6px 12px;
+    border-radius: 6px;
+    z-index: 999;
+}
+
+/* SYSTEM CONTAINER */
+.system {
+    position: relative;
+    width: 600px;
+    height: 600px;
+}
+
+/* SUN */
+.sun {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    color: gold;
+}
+
+/* ORBITS */
+.orbit {
+    position: absolute;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* PLANETS */
+.planet {
+    position: absolute;
+    font-size: 1.8rem;
+    transform: translate(-50%, -50%);
+}
+
+/* ORBIT SIZES */
+#orbitVenus {
+    width: 160px;
+    height: 160px;
+}
+
+#orbitEarth {
+    width: 260px;
+    height: 260px;
+}
+
+#orbitMars {
+    width: 360px;
+    height: 360px;
+}
+
+</style>
+</head>
+
+<body>
+
+<a class="back-arrow" href="index.html">←</a>
+
+<div class="system">
+
+    <!-- SUN -->
+    <div class="sun">☉</div>
+
+    <!-- ORBITS -->
+    <div id="orbitVenus" class="orbit"></div>
+    <div id="orbitEarth" class="orbit"></div>
+    <div id="orbitMars" class="orbit"></div>
+
+    <!-- PLANETS -->
+    <div id="venus" class="planet">♀</div>
+    <div id="earth" class="planet">🌍</div>
+    <div id="mars" class="planet">♂</div>
+
+</div>
+
+<script>
+
+function movePlanet(id, angle, radius) {
+    const rad = angle * Math.PI / 180;
+    const x = 300 + Math.cos(rad) * radius;
+    const y = 300 + Math.sin(rad) * radius;
+
+    const el = document.getElementById(id);
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+}
+
+function update() {
+    const now = new Date();
+    const t = now.getTime() / 1000;
+
+    // Speeds (adjust these to taste)
+    const venusAngle = (t * 20) % 360;   // fastest
+    const earthAngle = (t * 10) % 360;   // medium
+    const marsAngle = (t * 6) % 360;     // slowest
+
+    movePlanet("venus", venusAngle, 80);
+    movePlanet("earth", earthAngle, 130);
+    movePlanet("mars", marsAngle, 180);
+}
+
+setInterval(update, 30);
+
+</script>
+
+</body>
+</html>
