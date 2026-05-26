@@ -108,6 +108,30 @@ body {
 
 <script>
 
+// Days since J2000 epoch (Jan 1 2000)
+function getDaysSinceJ2000() {
+    const now = new Date();
+    const J2000 = new Date("2000-01-01T12:00:00Z");
+    return (now - J2000) / 86400000;
+}
+
+// Orbital elements (degrees + rates)
+// simplified mean longitude models
+const planets = {
+    venus: {
+        L0: 181.9798,      // base longitude
+        rate: 1.60213034   // deg/day
+    },
+    earth: {
+        L0: 100.4665,
+        rate: 0.98564736
+    },
+    mars: {
+        L0: 355.433,
+        rate: 0.52403295
+    }
+};
+
 function movePlanet(id, angle, radius) {
     const rad = angle * Math.PI / 180;
     const x = 300 + Math.cos(rad) * radius;
@@ -119,20 +143,26 @@ function movePlanet(id, angle, radius) {
 }
 
 function update() {
-    const now = new Date();
-    const t = now.getTime() / 1000;
 
-    // Speeds (adjust these to taste)
-    const venusAngle = (t * 20) % 360;   // fastest
-    const earthAngle = (t * 10) % 360;   // medium
-    const marsAngle = (t * 6) % 360;     // slowest
+    const d = getDaysSinceJ2000();
+
+    const venusAngle =
+        (planets.venus.L0 + planets.venus.rate * d) % 360;
+
+    const earthAngle =
+        (planets.earth.L0 + planets.earth.rate * d) % 360;
+
+    const marsAngle =
+        (planets.mars.L0 + planets.mars.rate * d) % 360;
 
     movePlanet("venus", venusAngle, 80);
     movePlanet("earth", earthAngle, 130);
     movePlanet("mars", marsAngle, 180);
 }
 
-setInterval(update, 30);
+setInterval(update, 50);
+update();
+``
 
 </script>
 
