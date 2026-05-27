@@ -2,8 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planetary System</title>
+<meta name="viewport" content="Real Positions)</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 
@@ -34,8 +33,8 @@ body {
 /* SYSTEM */
 .system {
     position: relative;
-    width: 600px;
-    height: 600px;
+    width: 700px;
+    height: 700px;
 }
 
 /* SUN */
@@ -43,40 +42,38 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     background: gold;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 30px gold, 0 0 60px orange;
+    box-shadow: 0 0 40px gold, 0 0 80px orange;
 }
 
-/* PLANET */
+/* PLANETS */
 .planet {
     position: absolute;
-    width: 14px;
-    height: 14px;
     border-radius: 50%;
     transform: translate(-50%, -50%);
 }
 
+/* LABELS */
 .label {
     position: absolute;
     font-size: 0.7rem;
     color: #ccc;
     transform: translate(-50%, -150%);
-    white-space: nowrap;
 }
 
-/* COLORS (distinct) */
-.p1 { background:#ff6666; box-shadow:0 0 8px #ff6666; }
-.p2 { background:#ffaa66; box-shadow:0 0 8px #ffaa66; }
-.p3 { background:#ffff66; box-shadow:0 0 8px #ffff66; }
-.p4 { background:#66ff66; box-shadow:0 0 8px #66ff66; }
-.p5 { background:#66ffff; box-shadow:0 0 8px #66ffff; }
-.p6 { background:#6666ff; box-shadow:0 0 8px #6666ff; }
-.p7 { background:#aa66ff; box-shadow:0 0 8px #aa66ff; }
-.p8 { background:#ff66ff; box-shadow:0 0 8px #ff66ff; }
+/* COLORS */
+.mercury { width:8px; height:8px; background:#aaa; box-shadow:0 0 6px #aaa; }
+.venus   { width:12px; height:12px; background:#ffd27a; box-shadow:0 0 8px #ffd27a; }
+.earth   { width:12px; height:12px; background:#44ff88; box-shadow:0 0 8px #44ff88; }
+.mars    { width:10px; height:10px; background:#ff4444; box-shadow:0 0 8px #ff4444; }
+.jupiter { width:20px; height:20px; background:#ffbb88; box-shadow:0 0 10px #ffbb88; }
+.saturn  { width:18px; height:18px; background:#ffe096; box-shadow:0 0 10px #ffe096; }
+.uranus  { width:14px; height:14px; background:#66ffff; box-shadow:0 0 8px #66ffff; }
+.neptune { width:14px; height:14px; background:#6666ff; box-shadow:0 0 8px #6666ff; }
 
 </style>
 </head>
@@ -90,60 +87,93 @@ body {
     <div class="sun"></div>
 
     <!-- PLANETS -->
-    <div id="p1" class="planet p1"></div>
-    <div id="p2" class="planet p2"></div>
-    <div id="p3" class="planet p3"></div>
-    <div id="p4" class="planet p4"></div>
-    <div id="p5" class="planet p5"></div>
-    <div id="p6" class="planet p6"></div>
-    <div id="p7" class="planet p7"></div>
-    <div id="p8" class="planet p8"></div>
+    <div id="mercury" class="planet mercury"></div>
+    <div id="venus" class="planet venus"></div>
+    <div id="earth" class="planet earth"></div>
+    <div id="mars" class="planet mars"></div>
+    <div id="jupiter" class="planet jupiter"></div>
+    <div id="saturn" class="planet saturn"></div>
+    <div id="uranus" class="planet uranus"></div>
+    <div id="neptune" class="planet neptune"></div>
 
     <!-- LABELS -->
-    <div id="l1" class="label">Planet 1</div>
-    <div id="l2" class="label">Planet 2</div>
-    <div id="l3" class="label">Planet 3</div>
-    <div id="l4" class="label">Planet 4</div>
-    <div id="l5" class="label">Planet 5</div>
-    <div id="l6" class="label">Planet 6</div>
-    <div id="l7" class="label">Planet 7</div>
-    <div id="l8" class="label">Planet 8</div>
+    <div id="l_mercury" class="label">Mercury</div>
+    <div id="l_venus" class="label">Venus</div>
+    <div id="l_earth" class="label">Earth</div>
+    <div id="l_mars" class="label">Mars</div>
+    <div id="l_jupiter" class="label">Jupiter</div>
+    <div id="l_saturn" class="label">Saturn</div>
+    <div id="l_uranus" class="label">Uranus</div>
+    <div id="l_neptune" class="label">Neptune</div>
 
 </div>
 
 <script>
 
-/* Simple orbit speeds (different for each planet) */
-const speeds = [16, 14, 12, 10, 8, 6, 5, 4];
-const radii  = [70, 100, 130, 160, 190, 220, 250, 280];
+/* ---------- DAYS SINCE J2000 ---------- */
 
-function move(id, labelId, angle, radius) {
+function daysSinceJ2000() {
+    const now = new Date();
+    const epoch = new Date("2000-01-01T12:00:00Z");
+    return (now - epoch) / 86400000;
+}
+
+/* ---------- REAL MEAN LONGITUDES ---------- */
+const planets = [
+    { id:"mercury", label:"l_mercury", r:60,  L0:252.250, rate:4.092334 },
+    { id:"venus",   label:"l_venus",   r:90,  L0:181.979, rate:1.602130 },
+    { id:"earth",   label:"l_earth",   r:120, L0:100.466, rate:0.985647 },
+    { id:"mars",    label:"l_mars",    r:150, L0:355.433, rate:0.524032 },
+    { id:"jupiter", label:"l_jupiter", r:210, L0:34.351,  rate:0.083086 },
+    { id:"saturn",  label:"l_saturn",  r:260, L0:50.077,  rate:0.033459 },
+    { id:"uranus",  label:"l_uranus",  r:310, L0:314.055, rate:0.011731 },
+    { id:"neptune", label:"l_neptune", r:360, L0:304.348, rate:0.005981 }
+];
+
+/*
+L0 = mean longitude at epoch
+rate = degrees per day
+These are real astronomical values (simplified)
+*/
+
+/* ---------- MOVE ---------- */
+
+function move(p, angle, radius) {
+
     const rad = angle * Math.PI / 180;
 
-    const x = 300 + Math.cos(rad) * radius;
-    const y = 300 + Math.sin(rad) * radius;
+    const x = 350 + Math.cos(rad) * radius;
+    const y = 350 + Math.sin(rad) * radius;
 
-    document.getElementById(id).style.left = x + "px";
-    document.getElementById(id).style.top  = y + "px";
+    const planet = document.getElementById(p.id);
+    const label  = document.getElementById(p.label);
 
-    document.getElementById(labelId).style.left = x + "px";
-    document.getElementById(labelId).style.top  = (y - 10) + "px";
+    planet.style.left = x + "px";
+    planet.style.top  = y + "px";
+
+    label.style.left = x + "px";
+    label.style.top  = (y - 12) + "px";
 }
+
+/* ---------- UPDATE ---------- */
 
 function update() {
 
-    const t = Date.now() / 1000;
+    const d = daysSinceJ2000();
 
-    for (let i = 0; i < 8; i++) {
-        const angle = (t * speeds[i]) % 360;
-        move("p"+(i+1), "l"+(i+1), angle, radii[i]);
-    }
+    planets.forEach(p => {
+
+        const angle = (p.L0 + p.rate * d) % 360;
+
+        move(p, angle, p.r);
+    });
 }
 
-setInterval(update, 50);
+setInterval(update, 1000);
 update();
 
 </script>
 
 </body>
 </html>
+``
