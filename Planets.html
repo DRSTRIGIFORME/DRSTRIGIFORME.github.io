@@ -1,7 +1,9 @@
 <!DOCTYPE html>
-<html lang="="UTF-8"><html lang="en">
+<html lang="en">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solar System (Real Positions)</title>
+<title>Solar System (Extended)</title>
 
 <style>
 
@@ -32,8 +34,8 @@ body {
 /* SYSTEM */
 .system {
     position: relative;
-    width: 700px;
-    height: 700px;
+    width: 800px;
+    height: 800px;
 }
 
 /* SUN */
@@ -49,13 +51,13 @@ body {
     box-shadow: 0 0 40px gold, 0 0 80px orange;
 }
 
-/* ORBITS (NEW) */
+/* ORBIT RINGS */
 .orbit {
     position: absolute;
     top: 50%;
     left: 50%;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.1);
     transform: translate(-50%, -50%);
 }
 
@@ -74,7 +76,7 @@ body {
     transform: translate(-50%, -150%);
 }
 
-/* COLORS */
+/* MAIN PLANETS */
 .mercury { width:8px; height:8px; background:#aaa; box-shadow:0 0 6px #aaa; }
 .venus   { width:12px; height:12px; background:#ffd27a; box-shadow:0 0 8px #ffd27a; }
 .earth   { width:12px; height:12px; background:#44ff88; box-shadow:0 0 8px #44ff88; }
@@ -83,6 +85,16 @@ body {
 .saturn  { width:18px; height:18px; background:#ffe096; box-shadow:0 0 10px #ffe096; }
 .uranus  { width:14px; height:14px; background:#66ffff; box-shadow:0 0 8px #66ffff; }
 .neptune { width:14px; height:14px; background:#6666ff; box-shadow:0 0 8px #6666ff; }
+
+/* DWARF PLANETS (outlined red) */
+.dwarf {
+    width:10px;
+    height:10px;
+    border: 2px solid red;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 0 8px rgba(255,0,0,0.6);
+}
 
 </style>
 </head>
@@ -95,7 +107,7 @@ body {
 
     <div class="sun"></div>
 
-    <!-- ORBIT RINGS -->
+    <!-- ORBITS (extended outward) -->
     <div class="orbit" style="width:120px;height:120px;"></div>
     <div class="orbit" style="width:180px;height:180px;"></div>
     <div class="orbit" style="width:240px;height:240px;"></div>
@@ -105,7 +117,14 @@ body {
     <div class="orbit" style="width:620px;height:620px;"></div>
     <div class="orbit" style="width:720px;height:720px;"></div>
 
-    <!-- PLANETS -->
+    <!-- dwarf rings -->
+    <div class="orbit" style="width:500px;height:500px;"></div> <!-- Ceres -->
+    <div class="orbit" style="width:800px;height:800px;"></div> <!-- Pluto -->
+    <div class="orbit" style="width:880px;height:880px;"></div> <!-- Haumea -->
+    <div class="orbit" style="width:950px;height:950px;"></div> <!-- Makemake -->
+    <div class="orbit" style="width:1050px;height:1050px;"></div> <!-- Eris -->
+
+    <!-- MAIN PLANETS -->
     <div id="mercury" class="planet mercury"></div>
     <div id="venus" class="planet venus"></div>
     <div id="earth" class="planet earth"></div>
@@ -114,6 +133,13 @@ body {
     <div id="saturn" class="planet saturn"></div>
     <div id="uranus" class="planet uranus"></div>
     <div id="neptune" class="planet neptune"></div>
+
+    <!-- DWARF PLANETS -->
+    <div id="ceres" class="planet dwarf"></div>
+    <div id="pluto" class="planet dwarf"></div>
+    <div id="haumea" class="planet dwarf"></div>
+    <div id="makemake" class="planet dwarf"></div>
+    <div id="eris" class="planet dwarf"></div>
 
     <!-- LABELS -->
     <div id="l_mercury" class="label">Mercury</div>
@@ -124,6 +150,12 @@ body {
     <div id="l_saturn" class="label">Saturn</div>
     <div id="l_uranus" class="label">Uranus</div>
     <div id="l_neptune" class="label">Neptune</div>
+
+    <div id="l_ceres" class="label">Ceres</div>
+    <div id="l_pluto" class="label">Pluto</div>
+    <div id="l_haumea" class="label">Haumea</div>
+    <div id="l_makemake" class="label">Makemake</div>
+    <div id="l_eris" class="label">Eris</div>
 
 </div>
 
@@ -136,42 +168,46 @@ function daysSinceJ2000() {
     return (now - epoch) / 86400000;
 }
 
-/* REAL PLANET DATA */
-const planets = [
-    { id:"mercury", label:"l_mercury", r:60,  L0:252.250, rate:4.092334 },
-    { id:"venus",   label:"l_venus",   r:90,  L0:181.979, rate:1.602130 },
-    { id:"earth",   label:"l_earth",   r:120, L0:100.466, rate:0.985647 },
-    { id:"mars",    label:"l_mars",    r:150, L0:355.433, rate:0.524032 },
-    { id:"jupiter", label:"l_jupiter", r:210, L0:34.351,  rate:0.083086 },
-    { id:"saturn",  label:"l_saturn",  r:260, L0:50.077,  rate:0.033459 },
-    { id:"uranus",  label:"l_uranus",  r:310, L0:314.055, rate:0.011731 },
-    { id:"neptune", label:"l_neptune", r:360, L0:304.348, rate:0.005981 }
+/* PLANET DATA */
+const bodies = [
+    {id:"mercury", label:"l_mercury", r:60,  L0:252.250, rate:4.092334},
+    {id:"venus",   label:"l_venus",   r:90,  L0:181.979, rate:1.602130},
+    {id:"earth",   label:"l_earth",   r:120, L0:100.466, rate:0.985647},
+    {id:"mars",    label:"l_mars",    r:150, L0:355.433, rate:0.524032},
+    {id:"jupiter", label:"l_jupiter", r:210, L0:34.351,  rate:0.083086},
+    {id:"saturn",  label:"l_saturn",  r:260, L0:50.077,  rate:0.033459},
+    {id:"uranus",  label:"l_uranus",  r:310, L0:314.055, rate:0.011731},
+    {id:"neptune", label:"l_neptune", r:360, L0:304.348, rate:0.005981},
+
+    {id:"ceres",   label:"l_ceres",   r:250, L0:80,  rate:0.214},
+    {id:"pluto",   label:"l_pluto",   r:400, L0:238, rate:0.00396},
+    {id:"haumea",  label:"l_haumea",  r:440, L0:122, rate:0.003},
+    {id:"makemake",label:"l_makemake",r:475, L0:45,  rate:0.0027},
+    {id:"eris",    label:"l_eris",    r:525, L0:204, rate:0.0018}
 ];
 
-function move(p, angle, radius) {
-
+function move(b, angle, radius) {
     const rad = angle * Math.PI / 180;
 
-    const x = 350 + Math.cos(rad) * radius;
-    const y = 350 + Math.sin(rad) * radius;
+    const x = 400 + Math.cos(rad) * radius;
+    const y = 400 + Math.sin(rad) * radius;
 
-    const planet = document.getElementById(p.id);
-    const label  = document.getElementById(p.label);
+    const p = document.getElementById(b.id);
+    const l = document.getElementById(b.label);
 
-    planet.style.left = x + "px";
-    planet.style.top  = y + "px";
+    p.style.left = x + "px";
+    p.style.top  = y + "px";
 
-    label.style.left = x + "px";
-    label.style.top  = (y - 12) + "px";
+    l.style.left = x + "px";
+    l.style.top  = (y - 12) + "px";
 }
 
 function update() {
-
     const d = daysSinceJ2000();
 
-    planets.forEach(p => {
-        const angle = (p.L0 + p.rate * d) % 360;
-        move(p, angle, p.r);
+    bodies.forEach(b => {
+        const angle = (b.L0 + b.rate * d) % 360;
+        move(b, angle, b.r);
     });
 }
 
@@ -182,5 +218,3 @@ update();
 
 </body>
 </html>
-``
-<head>
