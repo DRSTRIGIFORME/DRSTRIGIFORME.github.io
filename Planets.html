@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="Real Positions)</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="="UTF-8"><html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solar System (Real Positions)</title>
 
 <style>
 
@@ -50,6 +49,16 @@ body {
     box-shadow: 0 0 40px gold, 0 0 80px orange;
 }
 
+/* ORBITS (NEW) */
+.orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.12);
+    transform: translate(-50%, -50%);
+}
+
 /* PLANETS */
 .planet {
     position: absolute;
@@ -86,6 +95,16 @@ body {
 
     <div class="sun"></div>
 
+    <!-- ORBIT RINGS -->
+    <div class="orbit" style="width:120px;height:120px;"></div>
+    <div class="orbit" style="width:180px;height:180px;"></div>
+    <div class="orbit" style="width:240px;height:240px;"></div>
+    <div class="orbit" style="width:300px;height:300px;"></div>
+    <div class="orbit" style="width:420px;height:420px;"></div>
+    <div class="orbit" style="width:520px;height:520px;"></div>
+    <div class="orbit" style="width:620px;height:620px;"></div>
+    <div class="orbit" style="width:720px;height:720px;"></div>
+
     <!-- PLANETS -->
     <div id="mercury" class="planet mercury"></div>
     <div id="venus" class="planet venus"></div>
@@ -110,15 +129,14 @@ body {
 
 <script>
 
-/* ---------- DAYS SINCE J2000 ---------- */
-
+/* DAYS SINCE J2000 */
 function daysSinceJ2000() {
     const now = new Date();
     const epoch = new Date("2000-01-01T12:00:00Z");
     return (now - epoch) / 86400000;
 }
 
-/* ---------- REAL MEAN LONGITUDES ---------- */
+/* REAL PLANET DATA */
 const planets = [
     { id:"mercury", label:"l_mercury", r:60,  L0:252.250, rate:4.092334 },
     { id:"venus",   label:"l_venus",   r:90,  L0:181.979, rate:1.602130 },
@@ -129,14 +147,6 @@ const planets = [
     { id:"uranus",  label:"l_uranus",  r:310, L0:314.055, rate:0.011731 },
     { id:"neptune", label:"l_neptune", r:360, L0:304.348, rate:0.005981 }
 ];
-
-/*
-L0 = mean longitude at epoch
-rate = degrees per day
-These are real astronomical values (simplified)
-*/
-
-/* ---------- MOVE ---------- */
 
 function move(p, angle, radius) {
 
@@ -155,21 +165,17 @@ function move(p, angle, radius) {
     label.style.top  = (y - 12) + "px";
 }
 
-/* ---------- UPDATE ---------- */
-
 function update() {
 
     const d = daysSinceJ2000();
 
     planets.forEach(p => {
-
         const angle = (p.L0 + p.rate * d) % 360;
-
         move(p, angle, p.r);
     });
 }
 
-setInterval(update, 1000);
+setInterval(update,1000);
 update();
 
 </script>
@@ -177,3 +183,4 @@ update();
 </body>
 </html>
 ``
+<head>
