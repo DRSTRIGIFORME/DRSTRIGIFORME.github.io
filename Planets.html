@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solar System (Connected)</title>
+<title>Solar System (Extended)</title>
 
 <style>
 
@@ -14,7 +14,11 @@ body {
     font-family: "Times New Roman", serif;
     display: flex;
     justify-content: center;
+
     align-items: flex-start;
+
+    height: 100vh;
+
     padding-top: 80px;
 }
 
@@ -38,13 +42,6 @@ body {
     height: 800px;
 }
 
-/* SVG LINES */
-.lines {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-}
-
 /* SUN */
 .sun {
     position: absolute;
@@ -58,13 +55,13 @@ body {
     box-shadow: 0 0 40px gold, 0 0 80px orange;
 }
 
-/* ORBITS */
+/* ORBIT RINGS */
 .orbit {
     position: absolute;
     top: 50%;
     left: 50%;
     border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
     transform: translate(-50%, -50%);
 }
 
@@ -84,22 +81,23 @@ body {
 }
 
 /* MAIN PLANETS */
-.mercury { width:8px;height:8px;background:#aaa;box-shadow:0 0 6px #aaa; }
-.venus { width:12px;height:12px;background:#ffd27a;box-shadow:0 0 8px #ffd27a; }
-.earth { width:12px;height:12px;background:#44ff88;box-shadow:0 0 8px #44ff88; }
-.mars { width:10px;height:10px;background:#ff4444;box-shadow:0 0 8px #ff4444; }
-.jupiter { width:20px;height:20px;background:#ffbb88;box-shadow:0 0 10px #ffbb88; }
-.saturn { width:18px;height:18px;background:#ffe096;box-shadow:0 0 10px #ffe096; }
-.uranus { width:14px;height:14px;background:#66ffff;box-shadow:0 0 8px #66ffff; }
-.neptune { width:14px;height:14px;background:#6666ff;box-shadow:0 0 8px #6666ff; }
+.mercury { width:8px; height:8px; background:#aaa; box-shadow:0 0 6px #aaa; }
+.venus   { width:12px; height:12px; background:#ffd27a; box-shadow:0 0 8px #ffd27a; }
+.earth   { width:12px; height:12px; background:#44ff88; box-shadow:0 0 8px #44ff88; }
+.mars    { width:10px; height:10px; background:#ff4444; box-shadow:0 0 8px #ff4444; }
+.jupiter { width:20px; height:20px; background:#ffbb88; box-shadow:0 0 10px #ffbb88; }
+.saturn  { width:18px; height:18px; background:#ffe096; box-shadow:0 0 10px #ffe096; }
+.uranus  { width:14px; height:14px; background:#66ffff; box-shadow:0 0 8px #66ffff; }
+.neptune { width:14px; height:14px; background:#6666ff; box-shadow:0 0 8px #6666ff; }
 
-/* DWARF */
+/* DWARF PLANETS (outlined red) */
 .dwarf {
-    width:10px;height:10px;
-    border:2px solid red;
-    border-radius:50%;
-    background:transparent;
-    box-shadow:0 0 8px rgba(255,0,0,0.6);
+    width:10px;
+    height:10px;
+    border: 2px solid red;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 0 8px rgba(255,0,0,0.6);
 }
 
 </style>
@@ -109,136 +107,112 @@ body {
 
 <a class="back-arrow" href="index.html">←</a>
 
-<div class="system" id="system">
+<div class="system">
 
-<svg class="lines" id="lines"></svg>
+    <div class="sun"></div>
 
-<div class="sun"></div>
+    <!-- ORBITS (extended outward) -->
+    <div class="orbit" style="width:120px;height:120px;"></div>
+    <div class="orbit" style="width:180px;height:180px;"></div>
+    <div class="orbit" style="width:240px;height:240px;"></div>
+    <div class="orbit" style="width:300px;height:300px;"></div>
+    <div class="orbit" style="width:420px;height:420px;"></div>
+    <div class="orbit" style="width:520px;height:520px;"></div>
+    <div class="orbit" style="width:620px;height:620px;"></div>
+    <div class="orbit" style="width:720px;height:720px;"></div>
 
-<!-- ORBITS -->
-<div class="orbit" style="width:120px;height:120px;"></div>
-<div class="orbit" style="width:180px;height:180px;"></div>
-<div class="orbit" style="width:240px;height:240px;"></div>
-<div class="orbit" style="width:300px;height:300px;"></div>
-<div class="orbit" style="width:420px;height:420px;"></div>
-<div class="orbit" style="width:520px;height:520px;"></div>
-<div class="orbit" style="width:620px;height:620px;"></div>
-<div class="orbit" style="width:720px;height:720px;"></div>
+    <!-- dwarf rings -->
+    <div class="orbit" style="width:500px;height:500px;"></div> <!-- Ceres -->
+    <div class="orbit" style="width:800px;height:800px;"></div> <!-- Pluto -->
+    <div class="orbit" style="width:880px;height:880px;"></div> <!-- Haumea -->
+    <div class="orbit" style="width:950px;height:950px;"></div> <!-- Makemake -->
+    <div class="orbit" style="width:1050px;height:1050px;"></div> <!-- Eris -->
 
-<!-- PLANETS -->
-<div id="mercury" class="planet mercury"></div>
-<div id="venus" class="planet venus"></div>
-<div id="earth" class="planet earth"></div>
-<div id="mars" class="planet mars"></div>
-<div id="jupiter" class="planet jupiter"></div>
-<div id="saturn" class="planet saturn"></div>
-<div id="uranus" class="planet uranus"></div>
-<div id="neptune" class="planet neptune"></div>
+    <!-- MAIN PLANETS -->
+    <div id="mercury" class="planet mercury"></div>
+    <div id="venus" class="planet venus"></div>
+    <div id="earth" class="planet earth"></div>
+    <div id="mars" class="planet mars"></div>
+    <div id="jupiter" class="planet jupiter"></div>
+    <div id="saturn" class="planet saturn"></div>
+    <div id="uranus" class="planet uranus"></div>
+    <div id="neptune" class="planet neptune"></div>
 
-<div id="pluto" class="planet dwarf"></div>
-<div id="ceres" class="planet dwarf"></div>
-<div id="eris" class="planet dwarf"></div>
+    <!-- DWARF PLANETS -->
+    <div id="ceres" class="planet dwarf"></div>
+    <div id="pluto" class="planet dwarf"></div>
+    <div id="haumea" class="planet dwarf"></div>
+    <div id="makemake" class="planet dwarf"></div>
+    <div id="eris" class="planet dwarf"></div>
 
-<!-- LABELS -->
-<div id="l_mercury" class="label">Mercury</div>
-<div id="l_venus" class="label">Venus</div>
-<div id="l_earth" class="label">Earth</div>
-<div id="l_mars" class="label">Mars</div>
-<div id="l_jupiter" class="label">Jupiter</div>
-<div id="l_saturn" class="label">Saturn</div>
-<div id="l_uranus" class="label">Uranus</div>
-<div id="l_neptune" class="label">Neptune</div>
-<div id="l_pluto" class="label">Pluto</div>
-<div id="l_ceres" class="label">Ceres</div>
-<div id="l_eris" class="label">Eris</div>
+    <!-- LABELS -->
+    <div id="l_mercury" class="label">Mercury</div>
+    <div id="l_venus" class="label">Venus</div>
+    <div id="l_earth" class="label">Earth</div>
+    <div id="l_mars" class="label">Mars</div>
+    <div id="l_jupiter" class="label">Jupiter</div>
+    <div id="l_saturn" class="label">Saturn</div>
+    <div id="l_uranus" class="label">Uranus</div>
+    <div id="l_neptune" class="label">Neptune</div>
+
+    <div id="l_ceres" class="label">Ceres</div>
+    <div id="l_pluto" class="label">Pluto</div>
+    <div id="l_haumea" class="label">Haumea</div>
+    <div id="l_makemake" class="label">Makemake</div>
+    <div id="l_eris" class="label">Eris</div>
 
 </div>
 
 <script>
 
+/* DAYS SINCE J2000 */
 function daysSinceJ2000() {
-    return (new Date() - new Date("2000-01-01T12:00:00Z")) / 86400000;
+    const now = new Date();
+    const epoch = new Date("2000-01-01T12:00:00Z");
+    return (now - epoch) / 86400000;
 }
 
+/* PLANET DATA */
 const bodies = [
-    ["mercury",60,252.25,4.09],
-    ["venus",90,181.97,1.60],
-    ["earth",120,100.46,0.98],
-    ["mars",150,355.43,0.52],
-    ["jupiter",210,34.35,0.083],
-    ["saturn",260,50.07,0.033],
-    ["uranus",310,314.05,0.011],
-    ["neptune",360,304.34,0.005],
-    ["pluto",420,238,0.003],
-    ["ceres",240,80,0.21],
-    ["eris",480,204,0.0018]
+    {id:"mercury", label:"l_mercury", r:60,  L0:252.250, rate:4.092334},
+    {id:"venus",   label:"l_venus",   r:90,  L0:181.979, rate:1.602130},
+    {id:"earth",   label:"l_earth",   r:120, L0:100.466, rate:0.985647},
+    {id:"mars",    label:"l_mars",    r:150, L0:355.433, rate:0.524032},
+    {id:"jupiter", label:"l_jupiter", r:210, L0:34.351,  rate:0.083086},
+    {id:"saturn",  label:"l_saturn",  r:260, L0:50.077,  rate:0.033459},
+    {id:"uranus",  label:"l_uranus",  r:310, L0:314.055, rate:0.011731},
+    {id:"neptune", label:"l_neptune", r:360, L0:304.348, rate:0.005981},
+
+    {id:"ceres",   label:"l_ceres",   r:250, L0:80,  rate:0.214},
+    {id:"pluto",   label:"l_pluto",   r:400, L0:238, rate:0.00396},
+    {id:"haumea",  label:"l_haumea",  r:440, L0:122, rate:0.003},
+    {id:"makemake",label:"l_makemake",r:475, L0:45,  rate:0.0027},
+    {id:"eris",    label:"l_eris",    r:525, L0:204, rate:0.0018}
 ];
 
-function update(){
+function move(b, angle, radius) {
+    const rad = angle * Math.PI / 180;
 
-    const d = daysSinceJ2000();
-    const positions = [];
+    const x = 400 + Math.cos(rad) * radius;
+    const y = 400 + Math.sin(rad) * radius;
 
-    bodies.forEach(b=>{
-        let angle=(b[2]+b[3]*d)%360;
-        let rad=angle*Math.PI/180;
+    const p = document.getElementById(b.id);
+    const l = document.getElementById(b.label);
 
-        let x=400+Math.cos(rad)*b[1];
-        let y=400+Math.sin(rad)*b[1];
+    p.style.left = x + "px";
+    p.style.top  = y + "px";
 
-        document.getElementById(b[0]).style.left=x+"px";
-        document.getElementById(b[0]).style.top=y+"px";
-
-        document.getElementById("l_"+b[0]).style.left=x+"px";
-        document.getElementById("l_"+b[0]).style.top=(y-10)+"px";
-
-        positions.push({name:b[0],x,y});
-    });
-
-    drawConnections(positions);
+    l.style.left = x + "px";
+    l.style.top  = (y - 12) + "px";
 }
 
-/* -------- NEAREST CHAIN -------- */
+function update() {
+    const d = daysSinceJ2000();
 
-function drawConnections(points){
-
-    let svg=document.getElementById("lines");
-    svg.innerHTML="";
-
-    let visited=[];
-    visited.push(points[0]);
-
-    let remaining=[...points.slice(1)];
-
-    while(remaining.length>0){
-
-        let last=visited[visited.length-1];
-
-        let nearestIndex=0;
-        let minDist=Infinity;
-
-        remaining.forEach((p,i)=>{
-            let d=Math.hypot(p.x-last.x,p.y-last.y);
-            if(d<minDist){
-                minDist=d;
-                nearestIndex=i;
-            }
-        });
-
-        let next=remaining.splice(nearestIndex,1)[0];
-
-        let line=document.createElementNS("http://www.w3.org/2000/svg","line");
-        line.setAttribute("x1",last.x);
-        line.setAttribute("y1",last.y);
-        line.setAttribute("x2",next.x);
-        line.setAttribute("y2",next.y);
-        line.setAttribute("stroke","rgba(255,255,255,0.4)");
-        line.setAttribute("stroke-width","1");
-
-        svg.appendChild(line);
-
-        visited.push(next);
-    }
+    bodies.forEach(b => {
+        const angle = (b.L0 + b.rate * d) % 360;
+        move(b, angle, b.r);
+    });
 }
 
 setInterval(update,1000);
@@ -248,4 +222,3 @@ update();
 
 </body>
 </html>
-``
