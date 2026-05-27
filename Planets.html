@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planetary Clock</title>
+<title>Planetary System</title>
 
 <style>
 
@@ -18,7 +18,7 @@ body {
     height: 100vh;
 }
 
-/* BACK ARROW */
+/* BACK BUTTON */
 .back-arrow {
     position: fixed;
     top: 15px;
@@ -29,11 +29,6 @@ body {
     border: 1px solid rgba(255,0,0,0.5);
     padding: 6px 12px;
     border-radius: 6px;
-    z-index: 999;
-}
-
-.back-arrow:hover {
-    background: rgba(255,0,0,0.2);
 }
 
 /* SYSTEM */
@@ -56,49 +51,32 @@ body {
     box-shadow: 0 0 30px gold, 0 0 60px orange;
 }
 
-/* ORBITS */
-.orbit {
-    position: absolute;
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-#orbitEarth { width: 260px; height: 260px; }
-#orbitMars { width: 360px; height: 360px; }
-
-/* PLANETS */
+/* PLANET */
 .planet {
     position: absolute;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
     transform: translate(-50%, -50%);
 }
 
-#earth {
-    background: #44ff88;
-    box-shadow: 0 0 12px #44ff88;
-}
-
-#mars {
-    background: #ff4444;
-    box-shadow: 0 0 12px #ff4444;
-}
-
-/* INFO BOXES */
-.planet-box {
+.label {
     position: absolute;
-    background: rgba(0,0,0,0.85);
-    color: #eee;
-    border: 1px solid rgba(255,255,255,0.2);
-    padding: 6px 10px;
-    font-size: 0.75rem;
-    border-radius: 6px;
+    font-size: 0.7rem;
+    color: #ccc;
+    transform: translate(-50%, -150%);
     white-space: nowrap;
 }
+
+/* COLORS (distinct) */
+.p1 { background:#ff6666; box-shadow:0 0 8px #ff6666; }
+.p2 { background:#ffaa66; box-shadow:0 0 8px #ffaa66; }
+.p3 { background:#ffff66; box-shadow:0 0 8px #ffff66; }
+.p4 { background:#66ff66; box-shadow:0 0 8px #66ff66; }
+.p5 { background:#66ffff; box-shadow:0 0 8px #66ffff; }
+.p6 { background:#6666ff; box-shadow:0 0 8px #6666ff; }
+.p7 { background:#aa66ff; box-shadow:0 0 8px #aa66ff; }
+.p8 { background:#ff66ff; box-shadow:0 0 8px #ff66ff; }
 
 </style>
 </head>
@@ -111,131 +89,58 @@ body {
 
     <div class="sun"></div>
 
-    <div id="orbitEarth" class="orbit"></div>
-    <div id="orbitMars" class="orbit"></div>
+    <!-- PLANETS -->
+    <div id="p1" class="planet p1"></div>
+    <div id="p2" class="planet p2"></div>
+    <div id="p3" class="planet p3"></div>
+    <div id="p4" class="planet p4"></div>
+    <div id="p5" class="planet p5"></div>
+    <div id="p6" class="planet p6"></div>
+    <div id="p7" class="planet p7"></div>
+    <div id="p8" class="planet p8"></div>
 
-    <div id="earth" class="planet"></div>
-    <div id="mars" class="planet"></div>
-
-    <div id="earthBox" class="planet-box"></div>
-    <div id="marsBox" class="planet-box"></div>
+    <!-- LABELS -->
+    <div id="l1" class="label">Planet 1</div>
+    <div id="l2" class="label">Planet 2</div>
+    <div id="l3" class="label">Planet 3</div>
+    <div id="l4" class="label">Planet 4</div>
+    <div id="l5" class="label">Planet 5</div>
+    <div id="l6" class="label">Planet 6</div>
+    <div id="l7" class="label">Planet 7</div>
+    <div id="l8" class="label">Planet 8</div>
 
 </div>
 
 <script>
 
-/* ---------- PERKD SYSTEM ---------- */
+/* Simple orbit speeds (different for each planet) */
+const speeds = [16, 14, 12, 10, 8, 6, 5, 4];
+const radii  = [70, 100, 130, 160, 190, 220, 250, 280];
 
-const seasons = ["Gel","Sat","Adol","Mess","Nix"];
-const weekdays = [
-    "Saturday","Duday","Treday","Quday",
-    "Kinday","Sesday","Sepday","Finday"
-];
-
-function getPerKD() {
-
-    const now = new Date();
-
-    /* TIME */
-    const realSeconds =
-        now.getHours()*3600 +
-        now.getMinutes()*60 +
-        now.getSeconds();
-
-    const totalUnits = 24 * 64 * 64;
-    const unit = (realSeconds / 86400) * totalUnits;
-
-    const hour = Math.floor(unit / (64*64));
-    const minute = Math.floor((unit % (64*64)) / 64);
-    const second = Math.floor(unit % 64);
-
-    /* ✅ 1–8 hours per phase */
-    const displayHour = (hour % 8) + 1;
-
-    let phase = "";
-    if (hour < 8) phase = "I.M.";
-    else if (hour < 16) phase = "I.D.";
-    else phase = "A.V.";
-
-    const timeStr =
-        String(displayHour).padStart(2,"0")+":"+
-        String(minute).padStart(2,"0")+":"+
-        String(second).padStart(2,"0");
-
-    /* DATE */
-    const start = new Date(now.getFullYear(),0,0);
-    const dayOfYear = Math.floor((now - start)/86400000);
-
-    const seasonIndex = Math.floor((dayOfYear-1)/73);
-    const season = seasons[seasonIndex] ?? "???";
-
-    const seasonDay = ((dayOfYear-1)%73)+1;
-    const week = Math.floor((seasonDay-1)/8)+1;
-    const weekday = weekdays[(seasonDay-1)%8];
-
-    return {
-        time: timeStr,
-        phase,
-        season,
-        seasonDay,
-        week,
-        weekday
-    };
-}
-
-/* ---------- ORBITS ---------- */
-
-function getDaysSinceJ2000() {
-    const now = new Date();
-    const J2000 = new Date("2000-01-01T12:00:00Z");
-    return (now - J2000) / 86400000;
-}
-
-function movePlanet(id, boxId, angle, radius) {
-
+function move(id, labelId, angle, radius) {
     const rad = angle * Math.PI / 180;
 
     const x = 300 + Math.cos(rad) * radius;
     const y = 300 + Math.sin(rad) * radius;
 
-    const planet = document.getElementById(id);
-    const box = document.getElementById(boxId);
+    document.getElementById(id).style.left = x + "px";
+    document.getElementById(id).style.top  = y + "px";
 
-    planet.style.left = x + "px";
-    planet.style.top = y + "px";
-
-    box.style.left = (x + 12) + "px";
-    box.style.top = (y + 12) + "px";
+    document.getElementById(labelId).style.left = x + "px";
+    document.getElementById(labelId).style.top  = (y - 10) + "px";
 }
-
-/* ---------- UPDATE ---------- */
 
 function update() {
 
-    const d = getDaysSinceJ2000();
+    const t = Date.now() / 1000;
 
-    const earthAngle = (100.4665 + 0.98564736 * d) % 360;
-    const marsAngle = (355.433 + 0.52403295 * d) % 360;
-
-    movePlanet("earth","earthBox",earthAngle,130);
-    movePlanet("mars","marsBox",marsAngle,180);
-
-    const t = getPerKD();
-
-    const text =
-        t.time + "<br>" +
-        t.phase + "<br>" +
-        t.season + " " + t.seasonDay + "<br>" +
-        "W" + t.week + " • " + t.weekday;
-
-    document.getElementById("earthBox").innerHTML =
-        "Earth<br>" + text;
-
-    document.getElementById("marsBox").innerHTML =
-        "Mars<br>" + text;
+    for (let i = 0; i < 8; i++) {
+        const angle = (t * speeds[i]) % 360;
+        move("p"+(i+1), "l"+(i+1), angle, radii[i]);
+    }
 }
 
-setInterval(update,50);
+setInterval(update, 50);
 update();
 
 </script>
