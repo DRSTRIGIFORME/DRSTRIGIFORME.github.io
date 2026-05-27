@@ -1,22 +1,14 @@
 <!DOCTYPE html>
-<meta charset="UTF-8"><html lang="en">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Solar System Direction</title>
-
-<style>
-
-body {
+<html>
+<headbody {<head>
     margin: 0;
     background: #050505;
-    color: #eee;
-    font-family: "Times New Roman", serif;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     padding-top: 80px;
 }
 
-/* BACK BUTTON */
 .back-arrow {
     position: fixed;
     top: 15px;
@@ -24,17 +16,6 @@ body {
     font-size: 2rem;
     color: red;
     text-decoration: none;
-    border: 1px solid rgba(255,0,0,0.5);
-    padding: 6px 12px;
-    border-radius: 6px;
-}
-
-/* INFO BOX */
-#directionInfo {
-    position: fixed;
-    top: 70px;
-    left: 20px;
-    font-size: 1rem;
 }
 
 /* SYSTEM */
@@ -44,7 +25,7 @@ body {
     height: 800px;
 }
 
-/* SVG LINES */
+/* SVG */
 .lines {
     position: absolute;
     width: 100%;
@@ -61,17 +42,6 @@ body {
     background: gold;
     border-radius: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 0 40px gold, 0 0 80px orange;
-}
-
-/* ORBITS */
-.orbit {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.08);
-    transform: translate(-50%, -50%);
 }
 
 /* PLANETS */
@@ -85,86 +55,78 @@ body {
 .label {
     position: absolute;
     font-size: 0.7rem;
+    color: white;
     transform: translate(-50%, -150%);
 }
 
 /* COLORS */
-.mercury{width:8px;height:8px;background:#aaa;}
-.venus{width:12px;height:12px;background:#ffd27a;}
-.earth{width:12px;height:12px;background:#44ff88;}
-.mars{width:10px;height:10px;background:#ff4444;}
-.jupiter{width:20px;height:20px;background:#ffbb88;}
-.saturn{width:18px;height:18px;background:#ffe096;}
-.uranus{width:14px;height:14px;background:#66ffff;}
-.neptune{width:14px;height:14px;background:#6666ff;}
+.mercury { width:8px;height:8px;background:#aaa; }
+.venus   { width:12px;height:12px;background:#ffd27a; }
+.earth   { width:12px;height:12px;background:#44ff88; }
+.mars    { width:10px;height:10px;background:#ff4444; }
+.jupiter { width:18px;height:18px;background:#ffbb88; }
+.saturn  { width:16px;height:16px;background:#ffe096; }
+.uranus  { width:14px;height:14px;background:#66ffff; }
+.neptune { width:14px;height:14px;background:#6666ff; }
 
-.dwarf{
+.dwarf {
     width:10px;
     height:10px;
     border:2px solid red;
-    background:transparent;
 }
 
 </style>
 </head>
-
 <body>
 
 <a class="back-arrow" href="index.html">←</a>
-<div id="directionInfo">Loading...</div>
+
+<div id="directionInfo" style="position:fixed;top:70px;left:20px;color:white;"></div>
 
 <div class="system">
+    <svg class="lines" id="lines"></svg>
+    <div class="sun"></div>
 
-<svg class="lines" id="lines"></svg>
+    <!-- PLANETS -->
+    <div id="mercury" class="planet mercury"></div>
+    <div id="venus" class="planet venus"></div>
+    <div id="earth" class="planet earth"></div>
+    <div id="mars" class="planet mars"></div>
+    <div id="jupiter" class="planet jupiter"></div>
+    <div id="saturn" class="planet saturn"></div>
+    <div id="uranus" class="planet uranus"></div>
+    <div id="neptune" class="planet neptune"></div>
 
-<div class="sun"></div>
+    <div id="pluto" class="planet dwarf"></div>
+    <div id="ceres" class="planet dwarf"></div>
+    <div id="eris" class="planet dwarf"></div>
 
-<!-- ORBITS -->
-<div class="orbit" style="width:120px;height:120px;"></div>
-<div class="orbit" style="width:180px;height:180px;"></div>
-<div class="orbit" style="width:240px;height:240px;"></div>
-<div class="orbit" style="width:300px;height:300px;"></div>
-<div class="orbit" style="width:420px;height:420px;"></div>
-<div class="orbit" style="width:520px;height:520px;"></div>
-<div class="orbit" style="width:620px;height:620px;"></div>
-<div class="orbit" style="width:720px;height:720px;"></div>
+    <!-- MOON -->
+    <div id="moon" class="planet" style="width:6px;height:6px;background:white;"></div>
 
-<!-- PLANETS -->
-<div id="mercury" class="planet mercury"></div>
-<div id="venus" class="planet venus"></div>
-<div id="earth" class="planet earth"></div>
-<div id="mars" class="planet mars"></div>
-<div id="jupiter" class="planet jupiter"></div>
-<div id="saturn" class="planet saturn"></div>
-<div id="uranus" class="planet uranus"></div>
-<div id="neptune" class="planet neptune"></div>
-
-<div id="pluto" class="planet dwarf"></div>
-<div id="ceres" class="planet dwarf"></div>
-<div id="eris" class="planet dwarf"></div>
-
-<!-- MOON -->
-<div id="moon" class="planet" style="width:6px;height:6px;background:#ccc;"></div>
-
-<!-- LABELS -->
-<div id="l_earth" class="label">Earth</div>
-<div id="l_moon" class="label">Moon</div>
-<div id="l_mars" class="label">Mars</div>
-<div id="l_jupiter" class="label">Jupiter</div>
-<div id="l_saturn" class="label">Saturn</div>
-<div id="l_uranus" class="label">Uranus</div>
-<div id="l_neptune" class="label">Neptune</div>
+    <!-- LABELS -->
+    <div id="l_mercury" class="label">Mercury</div>
+    <div id="l_venus" class="label">Venus</div>
+    <div id="l_earth" class="label">Earth</div>
+    <div id="l_mars" class="label">Mars</div>
+    <div id="l_jupiter" class="label">Jupiter</div>
+    <div id="l_saturn" class="label">Saturn</div>
+    <div id="l_uranus" class="label">Uranus</div>
+    <div id="l_neptune" class="label">Neptune</div>
+    <div id="l_pluto" class="label">Pluto</div>
+    <div id="l_ceres" class="label">Ceres</div>
+    <div id="l_eris" class="label">Eris</div>
+    <div id="l_moon" class="label">Moon</div>
 
 </div>
 
 <script>
 
-/* DAYS */
-function days() {
+function days(){
     return (Date.now() - Date.parse("2000-01-01T12:00:00Z"))/86400000;
 }
 
-/* PLANETS */
+/* PLANET DATA */
 const bodies = [
 ["mercury",60,252.25,4.09],
 ["venus",90,181.97,1.60],
@@ -182,12 +144,18 @@ const bodies = [
 function move(id,x,y){
     document.getElementById(id).style.left=x+"px";
     document.getElementById(id).style.top=y+"px";
+
+    let label=document.getElementById("l_"+id);
+    if(label){
+        label.style.left=x+"px";
+        label.style.top=(y-10)+"px";
+    }
 }
 
 function update(){
 
-    const d = days();
-    let pos = [];
+    let d = days();
+    let pos=[];
 
     bodies.forEach(b=>{
         let ang=(b[2]+b[3]*d)%360;
@@ -197,38 +165,41 @@ function update(){
         let y=400+Math.sin(r)*b[1];
 
         move(b[0],x,y);
-
-        pos.push({name:b[0],x,y,ang});
+        pos.push({name:b[0],x,y});
     });
 
-    let earth = pos.find(p=>p.name==="earth");
+    let earth=pos.find(p=>p.name==="earth");
 
-    /* MOON */
-    let moonAng=(d/27.3*360)%360;
+    /* ✅ FIXED MOON (aligned to Earth orbit) */
+    let moonAng=(d*13 + (earth.x+earth.y)) % 360; 
     let mr=moonAng*Math.PI/180;
 
-    let mx=earth.x+Math.cos(mr)*20;
-    let my=earth.y+Math.sin(mr)*20;
+    let mx=earth.x + Math.cos(mr)*20;
+    let my=earth.y + Math.sin(mr)*20;
 
     move("moon",mx,my);
 
-    /* EARTH→MOON DIRECTION */
+    /* ✅ DIRECTION */
     let dx=mx-earth.x;
     let dy=my-earth.y;
 
-    let dir=Math.atan2(dy,dx)*180/Math.PI;
-    if(dir<0) dir+=360;
+    let dir=Math.atan2(dy,dx);
 
-    /* FIND TARGET */
+    /* ✅ FIND TARGET */
     let target=null;
 
     pos.forEach(p=>{
-        if(p.name==="earth") return;
+        if(p.name==="earth")return;
 
-        let diff=Math.abs(p.ang-dir);
-        if(diff>180) diff=360-diff;
+        let dxp=p.x-earth.x;
+        let dyp=p.y-earth.y;
 
-        if(diff<5){
+        let ang=Math.atan2(dyp,dxp);
+
+        let diff=Math.abs(ang-dir);
+        if(diff>Math.PI) diff=Math.PI*2-diff;
+
+        if(diff < 0.08){ // tighter accuracy
             target=p.name;
         }
     });
@@ -236,15 +207,21 @@ function update(){
     document.getElementById("directionInfo").textContent =
         target ? "Pointing toward: "+target : "Pointing toward: nothing";
 
-    /* DRAW LINE */
+    /* ✅ DRAW FULL RAY */
     let svg=document.getElementById("lines");
     svg.innerHTML="";
 
+    let len=2000;
+
+    let x2=earth.x + Math.cos(dir)*len;
+    let y2=earth.y + Math.sin(dir)*len;
+
     let line=document.createElementNS("http://www.w3.org/2000/svg","line");
+
     line.setAttribute("x1",earth.x);
     line.setAttribute("y1",earth.y);
-    line.setAttribute("x2",mx);
-    line.setAttribute("y2",my);
+    line.setAttribute("x2",x2);
+    line.setAttribute("y2",y2);
     line.setAttribute("stroke","white");
     line.setAttribute("stroke-width","2");
 
@@ -258,4 +235,7 @@ update();
 
 </body>
 </html>
-<head>
+<meta charset="UTF-8">
+
+<style>
+
