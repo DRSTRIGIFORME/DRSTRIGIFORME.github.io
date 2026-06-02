@@ -18,7 +18,7 @@ body {
     min-height: 100vh;
 }
 
-/* BACK */
+/* BACK BUTTON */
 .back-arrow {
     position: fixed;
     top: 15px;
@@ -28,7 +28,15 @@ body {
     text-decoration: none;
 }
 
-/* CIRCLE */
+/* CONTAINER (fix centering) */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transform: translateY(-20px);
+}
+
+/* CLOCK CIRCLE */
 .circle {
     position: relative;
     width: 500px;
@@ -36,9 +44,10 @@ body {
     border-radius: 50%;
     border: 2px solid rgba(255,255,255,0.15);
     overflow: hidden;
+    margin-bottom: 30px;
 }
 
-/* SUN + MOON */
+/* SUN & MOON */
 .sun, .moon {
     position: absolute;
     width: 40px;
@@ -54,7 +63,7 @@ body {
 .sun { color: gold; }
 .moon { color: silver; }
 
-/* CENTER */
+/* CENTER TEXT */
 .center {
     position: absolute;
     top: 50%;
@@ -67,12 +76,19 @@ body {
 .phase { font-size: 1.8rem; }
 .latin { color: #888; }
 
+/* CALENDAR TEXT */
+.calendar {
+    text-align: center;
+    margin-top: 10px;
+}
+
 /* WEEK GRID */
 .week-grid {
-    margin-top: 30px;
+    margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(8, 1fr);
     gap: 6px;
+    width: 500px;
 }
 
 .weekday-box {
@@ -84,11 +100,12 @@ body {
 .weekday-box.active {
     border: 1px solid gold;
     box-shadow: 0 0 10px gold;
+    background: rgba(255,215,0,0.15);
 }
 
 /* SEASONS */
 .season-wheel {
-    margin-top: 30px;
+    margin-top: 25px;
     display: flex;
     justify-content: center;
     gap: 10px;
@@ -116,7 +133,7 @@ body {
 
 <a class="back-arrow" href="index.html">←</a>
 
-<div>
+<div class="container">
 
 <div class="circle" id="circle">
 
@@ -131,18 +148,15 @@ body {
 
 </div>
 
-<!-- TEXT -->
-<div style="text-align:center; margin-top:20px;">
+<div class="calendar">
     <div id="seasonName">Gel</div>
     <div>Day <span id="seasonDay">1</span></div>
     <div>Week <span id="weekNum">1</span></div>
     <div id="weekdayName">Saturday</div>
 </div>
 
-<!-- WEEK -->
 <div class="week-grid" id="weekGrid"></div>
 
-<!-- SEASONS -->
 <div class="season-wheel">
     <div class="season-node" id="season0">Gel</div>
     <div class="season-node" id="season1">Sat</div>
@@ -163,7 +177,7 @@ const weekdays = [
     "Kinday","Sesday","Sepday","Finday"
 ];
 
-/* BUILD GRID */
+/* BUILD WEEK GRID */
 const weekGrid = document.getElementById("weekGrid");
 
 weekdays.forEach((d,i)=>{
@@ -174,18 +188,17 @@ weekdays.forEach((d,i)=>{
     weekGrid.appendChild(el);
 });
 
-/* MOVE */
-function move(id, angle, r) {
-    const rad = angle * Math.PI / 180;
+/* MOVE SUN/MOON */
+function move(id, angle, r){
+    const rad = angle*Math.PI/180;
     const x = 250 + Math.cos(rad)*r;
     const y = 250 + Math.sin(rad)*r;
 
     const el = document.getElementById(id);
-    el.style.left = x + "px";
-    el.style.top = y + "px";
+    el.style.left = x+"px";
+    el.style.top  = y+"px";
 }
 
-/* UPDATE */
 function update(){
 
     const now = new Date();
@@ -194,20 +207,20 @@ function update(){
     const m = now.getMinutes();
     const s = now.getSeconds();
 
-    /* TIME */
+    /* DISPLAY TIME */
     const displayHour = (h % 8) + 1;
 
     document.getElementById("time").textContent =
-        String(displayHour).padStart(2,"0") + ":" +
-        String(m).padStart(2,"0") + ":" +
+        String(displayHour).padStart(2,"0")+":"+
+        String(m).padStart(2,"0")+":"+
         String(s).padStart(2,"0");
 
     /* PHASE */
     let phase = "", latin = "";
 
-    if (h < 8) { phase = "I.M."; latin = "In Mane"; }
-    else if (h < 16) { phase = "I.D."; latin = "In Die"; }
-    else { phase = "A.V."; latin = "Ad Vespereum"; }
+    if (h < 8) { phase="I.M."; latin="In Mane"; }
+    else if (h < 16) { phase="I.D."; latin="In Die"; }
+    else { phase="A.V."; latin="Ad Vespereum"; }
 
     document.getElementById("phase").textContent = phase;
     document.getElementById("latin").textContent = latin;
@@ -219,7 +232,7 @@ function update(){
     move("sun", angle, 220);
     move("moon", angle + 180, 220);
 
-    /* GRADIENT */
+    /* LIGHT GRADIENT */
     const circle = document.getElementById("circle");
 
     const sunX = 50 + Math.cos(angle*Math.PI/180)*50;
@@ -242,9 +255,9 @@ function update(){
         #050714
     `;
 
-    /* DATE */
+    /* DATE SYSTEM */
     const start = new Date(now.getFullYear(),0,0);
-    const dayOfYear = Math.floor((now - start)/86400000);
+    const dayOfYear = Math.floor((now-start)/86400000);
 
     const seasonIndex = Math.floor((dayOfYear-1)/73);
     const seasonDay = ((dayOfYear-1)%73)+1;
